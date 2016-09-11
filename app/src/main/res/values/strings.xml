@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Vision</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_usersettings">Benutzereinstellungen</string>
+    <string name="action_add_account">Benutzer hinzufügen</string>
+    <string name="action_change_account">Benutzer wechseln</string>
+    <string name="action_add_shortcut">Shortcut hinzufügen</string>
+    <string name="action_share">Teilen</string>
+
+    <string name="drawer_open">Öffne Navigationsmenü</string>
+    <string name="drawer_close">Schließe Navigationsmenü</string>
+    <string name="drawer_title">Menü</string>
+    <string name="title_activity_authenticator">AuthenticatorActivity</string>
+
+    <!-- Login -->
+    <string name="hint_server">Server</string>
+    <string name="hint_username">Benutzername</string>
+    <string name="hint_password">Passwort</string>
+
+    <!-- Create new account -->
+    <string name="create_new_account">Neuen Benutzer hinzufügen</string>
+    <string name="warning_account_already_exists">Der Benutzer existiert bereits auf ihrem Smartphone</string>
+    <string name="add_new_account_done">Neuen Benutzer hinzufügen</string>
+    <string name="error_creating_account">Fehler beim hinzufügen des Benutzers</string>
+    <string name="warning_username_empty">Der Benutzername ist leer</string>
+    <string name="warning_password_empty">Das Passwort ist leer</string>
+    <string name="warning_server_empty">Der Server ist leer</string>
+    <string name="error_login_account">Benutzer konnte nicht am System angemeldet werden.</string>
+
+    <!-- Account manager -->
+    <string name="account_type">de.michaelsoftware.android.Vision</string>
+    <string name="title_activity_login_select">Konto auswählen</string>
+    <string name="action_search">Suchen</string>
+    <string name="title_activity_start_server">Server starten</string>
+
+    <string name="loading">Lade …</string>
+    <string name="loading_info">Lade benötigte Dateien vom Server herunter.</string>
+    <string name="select_file">Datei auswählen</string>
+    <string name="selected_file">Datei ausgewählt</string>
+    <string name="select_app">App auswählen</string>
+
+    <string name="title_activity_media_player">Vision - Media</string>
+    <string name="warning_mobile_title">Warnung</string>
+    <string name="warning_mobile_text">Sie gehen über eine mobile Datenverbindung ins Internet. Beim Abspielen von Videos können dabei erhebliche Kosten entstehen. Wollen sie trotzdem fortfahren?</string>
+
+    <string name="no_connection">Es konnte keine Verbindung zum Internet hergestellt werden.</string>
+</resources>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:background="#555555">
+
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:id="@+id/music_notification_album_art"
+        android:src="@drawable/notes"
+        android:background="#666666"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/music_notification_wrapper"
+        android:descendantFocusability="blocksDescendants"
+        android:layout_toRightOf="@+id/music_notification_album_art"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:id="@+id/music_notification_info">
+
+            <TextView
+                android:id="@+id/music_notification_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kein Titel"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:textColor="@color/audioNotification_heading_text"
+                android:layout_marginBottom="5dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/music_notification_current_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:00"
+            android:layout_below="@+id/music_notification_progress"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/audioNotification_time_text"
+            android:layout_marginTop="5dp" />
+
+        <ProgressBar
+            style="@style/CustomProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/music_notification_progress"
+            android:layout_below="@+id/music_notification_info"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/music_notification_info"
+            android:layout_alignStart="@+id/music_notification_info"
+            android:progress="50" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/music_notification_album_art"
+        android:layout_toEndOf="@+id/music_notification_album_art"
+        android:layout_below="@+id/music_notification_wrapper"
+        android:layout_marginLeft="2dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/music_notification_play_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@color/audioNotification_button_background"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/music_notification_wrapper"
+            android:layout_marginRight="1dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/music_notification_play_image"
+                android:src="@drawable/media_pause"
+                android:layout_alignTop="@+id/music_notification_stop_image"
+                android:layout_alignLeft="@+id/music_notification_progress"
+                android:layout_alignStart="@+id/music_notification_progress"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause"
+                android:id="@+id/music_notification_play_label"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/audioNotification_button_text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/music_notification_stop_btn"
+            android:background="@color/audioNotification_button_background"
+            android:layout_alignTop="@+id/music_notification_play_btn"
+            android:layout_toRightOf="@+id/music_notification_album_art"
+            android:layout_toStartOf="@+id/music_notification_play_btn"
+            android:layout_toLeftOf="@+id/music_notification_play_btn"
+            android:layout_marginLeft="1dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/music_notification_stop_image"
+                android:layout_gravity="center_vertical"
+                android:layout_below="@+id/music_notification_current_position"
+                android:layout_alignLeft="@+id/player"
+                android:layout_alignStart="@+id/player"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/media_stop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:id="@+id/music_notification_stop_label"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/audioNotification_button_text"  />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
