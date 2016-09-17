@@ -28,8 +28,9 @@ android:layout_height="match_parent">
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:textColor="#FF0000"
-    android:background="#FFFFFF"
-    android:orientation="vertical">
+    android:background="@color/lightgray"
+    android:orientation="vertical"
+    android:paddingTop="?attr/actionBarSize">
     <LinearLayout
         android:id="@+id/left_drawer_top"
         android:layout_width="fill_parent"

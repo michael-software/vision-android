@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,7 +21,6 @@ public class OfflineActivity extends Activity {
 
     public void reconnect(View v) {
         if(this.isNetworkAvailable()) {
-            Log.d("network", "available");
             Intent i = new Intent(OfflineActivity.this, MainActivity.class);
             this.finish();  //Kill the activity from which you will go to next activity
             this.startActivity(i);

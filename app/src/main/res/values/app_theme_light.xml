@@ -10,8 +10,21 @@
     <color name="textColorLight">#000000</color>
     <color name="editTextColorLight">#666666</color>
 
-    <style name="AppThemeLight" parent="@style/Theme.AppCompat.Light">
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/actionBarLight</item>
+        <item name="colorPrimaryDark">@color/actionBarDarkLight</item>
+        <item name="colorAccent">#FF0000</item>
+
+        <item name="android:windowBackground">@color/backgroundLight</item>
+
+        <item name="android:textSize">@dimen/activity_text_size</item>
+
+        <item name="android:buttonStyle">@style/ButtonLight</item>
+
+        <item name="android:textViewStyle">@style/TextViewLight</item>
+
         <!-- Customize your theme here. -->
+        <!--
         <item name="android:actionBarStyle" tools:ignore="NewApi">@style/MyActionBarLight</item>
         <item name="android:checkboxStyle">@style/customCheckBoxStyleLight</item>
         <item name="actionBarStyle">@style/MyActionBarLight</item>
@@ -21,16 +34,16 @@
         <item name="android:colorPrimary" tools:ignore="NewApi">@color/actionBarLight</item>
 
         <item name="android:actionMenuTextColor">@color/actionBarTextLight</item>
-        <item name="android:windowBackground">@color/backgroundLight</item>
 
-        <item name="android:buttonStyle">@style/ButtonLight</item>
+
+
         <item name="android:imageButtonStyle">@style/ButtonLight</item>
         <item name="android:editTextStyle">@style/EditTextLight</item>
 
         <item name="android:colorPressedHighlight">@color/highlightRed</item>
         <item name="android:colorFocusedHighlight">@color/highlightRed</item>
 
-        <item name="android:textSize">@dimen/activity_text_size</item>
+
 
         <item name="android:textCursorDrawable">@null</item>
 
@@ -42,8 +55,6 @@
 
         <item name="android:seekBarStyle">@style/CustomSeekBar</item>
 
-        <item name="android:textViewStyle">@style/TextViewLight</item>
-
         <item name="android:textColorPrimary">@color/ab_text_color</item>
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
@@ -52,16 +63,16 @@
         <item name="android:windowAllowEnterTransitionOverlap" tools:targetApi="lollipop">true</item>
 
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/actionBarLight</item>
+        <item name="actionModeBackground">@color/actionBarLight</item>-->
 
-        <!-- Theme dependent images -->
+        <!-- Theme dependent images --><!--
         <item name="justify_left">@drawable/ic_action_justify_left_black</item>
         <item name="justify_center">@drawable/ic_action_justify_center_black</item>
         <item name="justify_right">@drawable/ic_action_justify_right_black</item>
         <item name="justify_full">@drawable/ic_action_justify_full_black</item>
 
         <item name="ordered_list">@drawable/ic_action_ordered_list_black</item>
-        <item name="unordered_list">@drawable/ic_action_unordered_list_black</item>
+        <item name="unordered_list">@drawable/ic_action_unordered_list_black</item>-->
     </style>
 
     <style name="MyActionBarLight" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">

@@ -5,17 +5,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
+import de.michaelsoftware.android.Vision.tools.ThemeUtils;
 import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 import de.michaelsoftware.android.Vision.tools.network.JsonParserAsync;
 import de.michaelsoftware.android.Vision.tools.storage.SharedPreferencesHelper;
-import de.michaelsoftware.android.Vision.tools.ThemeUtils;
 
 /**
  * Created by Michael on 12.05.2016.
@@ -24,7 +22,22 @@ public abstract class SiteActionsActivity extends LoginActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        juiParserLocal.addAction("changeUser", 0, this);
+        juiParserLocal.addAction("clearCache", 0, this);
+        juiParserLocal.addAction("activateNotifications", 0, this);
+        juiParserLocal.addAction("deactivateNotifications", 0, this);
+        juiParserLocal.addAction("activateDeveloper", 0, this);
+        juiParserLocal.addAction("deactivateDeveloper", 0, this);
+        juiParserLocal.addAction("activateLightMode", 0, this);
+        juiParserLocal.addAction("activateDarkMode", 0, this);
+        juiParserLocal.addAction("activateExternalImages", 0, this);
+        juiParserLocal.addAction("deactivateExternalImages", 0, this);
+        juiParserLocal.addAction("activateExternalVideos", 0, this);
+        juiParserLocal.addAction("deactivateExternalVideos", 0, this);
+        juiParserLocal.addAction("autoHideActionbar", 1, this);
     }
+
 
     public void openHome() {
         String urlStr = this.loginHelper.getServer() + "ajax.php?show=plugins";
@@ -113,6 +126,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
         String developer = pref.read("DEVELOPER", "0");
         boolean externallyImages = pref.readBoolean("IMAGES_EXTERNALLY");
         boolean externallyVideos = pref.readBoolean("VIDEO_EXTERNALLY");
+        boolean autoHideActionbar = pref.readBoolean("AUTO_HIDE_ACTIONBAR");
 
         pString += ",{\"type\":\"text\", \"value\":\"MAC Adresse des Servers : " + mac + "\"}";
         String wolserver = pref.read("WOLSERVER");
@@ -147,6 +161,12 @@ public abstract class SiteActionsActivity extends LoginActivity {
             pString += ",{\"type\":\"button\", \"value\":\"Helles Design aktivieren\", \"click\":\"activateLightMode\"}";
         } else {
             pString += ",{\"type\":\"button\", \"value\":\"Dunkles Design aktivieren\", \"click\":\"activateDarkMode\"}";
+        }
+
+        if(autoHideActionbar) {
+            pString += ",{\"type\":\"button\", \"value\":\"ActionBar immer einblenden\", \"click\":\"autoHideActionbar('false')\"}";
+        } else {
+            pString += ",{\"type\":\"button\", \"value\":\"ActionBar automatisch ausblenden\", \"click\":\"autoHideActionbar('true')\"}";
         }
 
         pString += ",{\"type\":\"hline\"}";
@@ -197,11 +217,14 @@ public abstract class SiteActionsActivity extends LoginActivity {
         pString += "]";
         pString += ",\"head\":{\"refreshable\":\"FALSE\"}}";
 
+        juiParserLocal.parse(pString);
+
+        /*
         if (!pString.equals("")) {
             JsonParserAsync json = new JsonParserAsync();
             json.setOutput(this, "getContent");
             json.execute(pString);
-        }
+        }*/
     }
 
     public void openShare(String pParameter) {
@@ -279,7 +302,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void activateNotifications(View v) {
+    public void activateNotifications() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.store("NOTIFICATION", "1");
 
@@ -287,7 +310,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void deactivateNotifications(View v) {
+    public void deactivateNotifications() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.store("NOTIFICATION", "0");
 
@@ -295,7 +318,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void activateDeveloper(View v) {
+    public void activateDeveloper() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.store("DEVELOPER", "1");
 
@@ -303,7 +326,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void deactivateDeveloper(View v) {
+    public void deactivateDeveloper() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.store("DEVELOPER", "0");
 
@@ -311,7 +334,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void activateExternalImages(View v) {
+    public void activateExternalImages() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.storeBoolean("IMAGES_EXTERNALLY", true);
 
@@ -319,7 +342,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void deactivateExternalImages(View v) {
+    public void deactivateExternalImages() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.storeBoolean("IMAGES_EXTERNALLY", false);
 
@@ -327,7 +350,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void activateExternalVideos(View v) {
+    public void activateExternalVideos() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.storeBoolean("VIDEO_EXTERNALLY", true);
 
@@ -335,7 +358,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void deactivateExternalVideos(View v) {
+    public void deactivateExternalVideos() {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
         sharedPreferencesHelper.storeBoolean("VIDEO_EXTERNALLY", false);
 
@@ -343,17 +366,51 @@ public abstract class SiteActionsActivity extends LoginActivity {
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void activateLightMode(View v) {
+    public void activateLightMode() {
         ThemeUtils.changeToTheme(this, ThemeUtils.LIGHT, loginHelper);
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void activateDarkMode(View v) {
+    public void activateDarkMode() {
         ThemeUtils.changeToTheme(this, ThemeUtils.DARK, loginHelper);
     }
 
     @SuppressWarnings("unused") // used by invoke
-    public void changeUser(View v) {
+    public void changeUser() {
         loginHelper.openSelectUserAccount();
+    }
+
+    @SuppressWarnings("unused") // used by invoke
+    public void clearCache() {
+        offlineHelper.clear();
+        this.loadMenu();
+    }
+
+    @SuppressWarnings("unused") // used by invoke
+    public void autoHideActionbar(String boolString) {
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
+
+        if(boolString.equals("true")) {
+            sharedPreferencesHelper.storeBoolean("AUTO_HIDE_ACTIONBAR", true);
+            this.AUTO_HIDE_ACTIONBAR = true;
+        } else {
+            sharedPreferencesHelper.storeBoolean("AUTO_HIDE_ACTIONBAR", false);
+            this.AUTO_HIDE_ACTIONBAR = false;
+
+            this.showActionBar();
+        }
+
+        this.openPlugin("android","settings");
+    }
+
+    public void sendMail() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"michaelsoftware1997@gmail.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+        i.putExtra(Intent.EXTRA_TEXT   , "");
+
+
+        startActivity(Intent.createChooser(i, "E-Mail senden"));
     }
 }

@@ -15,18 +15,25 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.support.v4.view.WindowCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
+import net.michaelsoftware.android.jui.JuiParser;
+
+import java.text.Normalizer;
 import java.util.ArrayList;
 
 import de.michaelsoftware.android.Vision.MyService;
@@ -34,16 +41,19 @@ import de.michaelsoftware.android.Vision.OfflineActivity;
 import de.michaelsoftware.android.Vision.R;
 import de.michaelsoftware.android.Vision.activity.MainActivity;
 import de.michaelsoftware.android.Vision.service.IncomingHandlerActivity;
+import de.michaelsoftware.android.Vision.tools.FormatHelper;
 import de.michaelsoftware.android.Vision.tools.HistoryHelper;
 import de.michaelsoftware.android.Vision.tools.LoginHelper;
 import de.michaelsoftware.android.Vision.tools.Logs;
 import de.michaelsoftware.android.Vision.tools.gui.GUIHelper;
 import de.michaelsoftware.android.Vision.tools.storage.OfflineHelper;
+import de.michaelsoftware.android.Vision.tools.storage.SharedPreferencesHelper;
 
 /**
  * Created by Michael on 12.05.2016.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    public boolean AUTO_HIDE_ACTIONBAR = true;
     public OfflineHelper offlineHelper;
     protected DrawerLayout mDrawerLayout;
     protected Messenger mService = null;
@@ -64,6 +74,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected Handler mHandler;
     protected Runnable searchTask;
+    protected JuiParser juiParserLocal;
+    private ScrollView scrollView;
+    private LinearLayout linearLayout;
+    public int offsetTop = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +85,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         historyHelper = new HistoryHelper(this); // Required for all actions
 
         this.openSelectAccount(getIntent());
+
+        this.supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         
         setupActivity();
         setupDrawer();
@@ -83,12 +99,67 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout linearLayout = (LinearLayout) swipeRefreshLayout.findViewById(R.id.refresh_layout_linear);
-        ScrollView scrollView = (ScrollView) swipeRefreshLayout.findViewById(R.id.refresh_layout_scroll);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        linearLayout = (LinearLayout) findViewById(R.id.refresh_layout_linear);
+        scrollView = (ScrollView) findViewById(R.id.refresh_layout_scroll);
+
+        swipeRefreshLayout.setProgressViewOffset(true, FormatHelper.getActionBarHeight(this)/2, (int) Math.round(FormatHelper.getActionBarHeight(this)*1.5) );
+
+        showActionBar();
+        offsetTop = FormatHelper.getActionBarHeight(this);
+        linearLayout.setPadding(0, offsetTop, 0, 0);
 
         gui = new GUIHelper(this, linearLayout, scrollView);
+        juiParserLocal = new JuiParser(this, scrollView, linearLayout);
+
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    int historySize = motionEvent.getHistorySize();
+
+                    if(view.getScrollY() > FormatHelper.getActionBarHeight(view.getContext())) {
+
+                        if(historySize-1 > 0) {
+                            float y = (int) motionEvent.getHistoricalY(historySize-1);
+
+                                if ((motionEvent.getY() - y) < 0) {
+                                    hideActionBar();
+                                } else {
+                                    showActionBar();
+                                }
+
+                        }
+
+                    } else if(view.getScrollY() <= FormatHelper.getActionBarHeight(view.getContext())) {
+                        showActionBar();
+                    }
+                }
+
+                return view.onTouchEvent(motionEvent);
+            }
+        });
 
         super.onCreate(savedInstanceState);
+
+        SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()));
+        this.AUTO_HIDE_ACTIONBAR = pref.readBoolean("AUTO_HIDE_ACTIONBAR");
+    }
+
+    private void hideActionBar() {
+        if(AUTO_HIDE_ACTIONBAR) {
+            if (getSupportActionBar() != null)
+                getSupportActionBar().hide();
+            else if (getActionBar() != null)
+                getActionBar().hide();
+        }
+    }
+
+    protected void showActionBar() {
+        if (getSupportActionBar() != null)
+            getSupportActionBar().show();
+        else if (getActionBar() != null)
+            getActionBar().show();
     }
 
     protected abstract void openSelectAccount(Intent intent);

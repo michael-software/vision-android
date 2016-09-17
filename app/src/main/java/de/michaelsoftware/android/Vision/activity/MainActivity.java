@@ -156,7 +156,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 }
             };
 
-            mHandler.postDelayed(searchTask, 1000);
+            mHandler.postDelayed(searchTask, 500);
         } else {
             this.insertSearch(null, "");
         }
@@ -164,7 +164,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
     @Override
     public void onRefresh() {
-        this.refreshPlugin(currentName, currentView, currentParameter);
+        this.gui.reload();
     }
 
     @Override
@@ -194,6 +194,9 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             this.moveTaskToBack(true);
         } else if(id == de.michaelsoftware.android.Vision.R.id.action_share) {
             this.sharePlugin();
+        } else if(id == R.id.action_feedback) {
+
+            this.sendMail();
         }
 
         return super.onOptionsItemSelected(item);
@@ -363,9 +366,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 String data = offlineHelper.getData(urlStr);
                 if (data == null || data.equals("")) {
-                    HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
-                    httpPost.setOutput(this, "getContent");
-                    httpPost.execute(urlStr);
+                    this.gui.parse(urlStr);
                 } else {
                     getContent(data);
                 }
@@ -506,6 +507,17 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         }
     }
 
+    @SuppressWarnings("unused") // used by invoke
+    public void sendAsync(String name, String value) {
+        Bundle bundle = new Bundle();
+        bundle.putString("value", value);
+        bundle.putString("authtoken", this.getLoginHelper().getAuthtoken());
+        bundle.putString("action", name);
+        bundle.putString("plugin", this.getCurrentName());
+
+        this.sendToService(bundle, MyService.MSG_ACTION_SEND);
+    }
+
     private void openImage(String pPath) {
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getIdentifier());
 
@@ -628,6 +640,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 if(getSupportActionBar() != null)
                     getSupportActionBar().setTitle(de.michaelsoftware.android.Vision.R.string.drawer_title);
 
+                showActionBar();
+
                 invalidateOptionsMenu();
             }
 
@@ -640,6 +654,28 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 invalidateOptionsMenu();
             }
         };
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                showActionBar();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
 
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
@@ -838,12 +874,6 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         }
 
         return null;
-    }
-
-    @SuppressWarnings("unused") // used by invoke
-    public void clearCache(View v) {
-        offlineHelper.clear();
-        this.loadMenu();
     }
 
     public String getCurrentParameter() {

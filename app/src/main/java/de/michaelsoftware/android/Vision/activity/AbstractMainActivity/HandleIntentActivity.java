@@ -6,16 +6,13 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.HashMap;
 
-import de.michaelsoftware.android.Vision.activity.MainActivity;
 import de.michaelsoftware.android.Vision.listener.OnAuthtokenGetListener;
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
 import de.michaelsoftware.android.Vision.tools.gui.GUIHelper;
 import de.michaelsoftware.android.Vision.tools.gui.MethodHelper;
-import de.michaelsoftware.android.Vision.tools.gui.views.UploadButton;
 import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 
 /**
@@ -95,6 +92,7 @@ public abstract class HandleIntentActivity extends BaseActivity {
                 }
             }
         } else if(requestCode == GUIHelper.REQUEST_FILE) {
+            /*
             if(data != null) {
                 String path = data.getDataString();
 
@@ -103,7 +101,7 @@ public abstract class HandleIntentActivity extends BaseActivity {
 
                     gui.setCurrentView(null);
                 }
-            }
+            }*/
         }
     }
 

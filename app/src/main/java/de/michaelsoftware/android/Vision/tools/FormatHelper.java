@@ -530,4 +530,15 @@ public class FormatHelper {
 
         return value;
     }
+
+    public static int getActionBarHeight(Context context) {
+        TypedValue typedValue = new TypedValue();
+        int actionBarHeight = 0;
+
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, context.getResources().getDisplayMetrics());
+        }
+
+        return actionBarHeight;
+    }
 }

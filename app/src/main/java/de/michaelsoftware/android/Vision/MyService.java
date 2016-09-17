@@ -82,6 +82,7 @@ public class MyService extends AudioService {
             }
 
             if(action.equals(MyService.ACTION_PAUSE)){
+                Log.d("service", "pause");
                 if(mp != null && mp.isPlaying()) {
                     mp.pause();
                     updateAudioNotification(mp.getCurrentPosition());

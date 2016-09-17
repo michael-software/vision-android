@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="backgroundLight">#FFFFFF</color>
+    <color name="actionBarLight">#E50000</color>
+    <color name="actionBarDarkLight">#BF0000</color>
+    <color name="actionBarTextLight">#FFFFFF</color>
+    <color name="tileBackgroundLight">#C8C8C8</color>
+    <color name="tileBackgroundLightFocus">#666666</color>
+    <color name="headerBackgroundLight">#888888</color>
+    <color name="textColorLight">#000000</color>
+    <color name="editTextColorLight">#666666</color>
+
+    <style name="Dialog" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/backgroundLight</item>
+
+        <item name="android:buttonStyle">@style/ButtonLight</item>
+        <item name="android:editTextStyle">@style/EditTextLight</item>
+        <item name="android:checkboxStyle">@style/customCheckBoxStyleLight</item>
+    </style>
+
+    <style name="customCheckBoxStyleLight" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <!--<item name="android:button">@drawable/custom_checkbox</item>-->
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="ButtonLight" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@color/tileBackgroundLight</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <style name="EditTextLight" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textColor">@color/editTextColorLight</item>
+        <!--<item name="android:background">@drawable/edittext_modified_states</item>-->
+    </style>
+</resources>

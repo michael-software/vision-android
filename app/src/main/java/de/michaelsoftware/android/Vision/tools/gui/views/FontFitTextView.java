@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
 
-import de.michaelsoftware.android.Vision.tools.FormatHelper;
+import net.michaelsoftware.android.jui.Tools;
 
 public class FontFitTextView extends TextView {
 
@@ -41,7 +41,7 @@ public class FontFitTextView extends TextView {
         float lo = 2;
         final float threshold = 0.5f; // How close we have to be
 
-        int maxHeight= FormatHelper.getPxFromDp(getContext(), 22);
+        int maxHeight= Tools.getPxFromDp(getContext(), 22);
 
         mTestPaint.set(this.getPaint());
 
