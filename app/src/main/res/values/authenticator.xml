@@ -1,0 +1,7 @@
+<resources>
+    <string name="uc_lbl_username">Benutzername</string>
+    <string name="uc_lbl_password">Passwort</string>
+    <string name="uc_lbl_api_key">API-Key</string>
+    <string name="uc_cmd_cancel">Abbrechen</string>
+    <string name="uc_cmd_ok">Anmelden</string>
+</resources>

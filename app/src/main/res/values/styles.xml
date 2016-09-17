@@ -1,0 +1,30 @@
+<resources>
+
+    <style name="FullscreenTheme" parent="AppThemeLight">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+
+        <item name="colorPrimary">#222222</item>
+        <item name="colorPrimaryDark">#000000</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="customCheckBoxStyle" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/custom_checkbox</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="customScrollBar">
+        <item name="android:scrollbarThumbVertical">@drawable/scrollbar_handle</item>
+        <item name="android:scrollbarThumbHorizontal">@drawable/scrollbar_handle</item>
+        <item name="android:scrollbarTrackVertical">@drawable/scrollbar_track</item>
+        <item name="android:scrollbarTrackHorizontal">@drawable/scrollbar_track</item>
+    </style>
+
+</resources>

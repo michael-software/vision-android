@@ -1,0 +1,14 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+signature.jks
+.idea/
+jui/.gitignore
+jui/proguard-rules.pro
+app/.gitignore
+app/proguard-rules.pro
+.navigation/app/raw/main.nvg.xml

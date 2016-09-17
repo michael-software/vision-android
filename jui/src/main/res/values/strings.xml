@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Jui</string>
+    <string name="loading">Lade Daten</string>
+    <string name="loading_info">Lade Daten vom Server</string>
+</resources>

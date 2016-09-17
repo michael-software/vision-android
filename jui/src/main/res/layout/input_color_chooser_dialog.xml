@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="#FFFFFF"
+        android:id="@+id/inputColorChooserDialog_preview"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Rot"
+        android:id="@+id/inputColorChooserDialog_textview_red"
+        android:gravity="center_horizontal" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputColorChooserDialog_seekbar_red"
+        android:padding="10dp"
+        android:max="255" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Blau"
+        android:id="@+id/inputColorChooserDialog_textview_blue"
+        android:gravity="center_horizontal" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputColorChooserDialog_seekbar_blue"
+        android:padding="10dp"
+        android:max="255" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Grün"
+        android:id="@+id/inputColorChooserDialog_textview_green"
+        android:gravity="center_horizontal" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputColorChooserDialog_seekbar_green"
+        android:padding="10dp"
+        android:max="255" />
+
+    <Button
+        android:id="@+id/inputColorChooserDialog_button_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" Ok "
+        android:layout_marginTop="10dp" />
+
+</LinearLayout>

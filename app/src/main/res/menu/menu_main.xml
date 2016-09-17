@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context="de.michaelsoftware.android.Vision.activity.MainActivity">
+    <item android:id="@+id/action_search"
+        android:orderInCategory="100" app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="@string/action_search"
+        android:icon="@drawable/search"/>
+    <item android:id="@+id/action_share" android:title="@string/action_share"
+        android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/share" />
+    <item android:id="@+id/action_change_account" android:title="@string/action_change_account"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_add_account" android:title="@string/action_add_account"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_usersettings" android:title="@string/action_usersettings"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_add_shortcut" android:title="@string/action_add_shortcut"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_feedback" android:title="@string/action_feedback"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

@@ -1,0 +1,15 @@
+<resources>
+    <color name="red">#EF0000</color>
+    <color name="lightgray">#D8D8D8</color>
+    <color name="darkgray">#666666</color>
+    <color name="darkGreen">#009900</color>
+    <color name="highlightRed">#E50000</color>
+    <color name="audioNotification_button_background">#666666</color>
+    <color name="audioNotification_button_text">#FFFFFF</color>
+    <color name="audioNotification_heading_text">#DFDFDF</color>
+    <color name="audioNotification_time_text">#999999</color>
+
+    <color name="apptheme_color">#ff0000</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>

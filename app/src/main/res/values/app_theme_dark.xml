@@ -1,0 +1,107 @@
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base application theme. -->
+    <color name="backgroundDark">#333333</color>
+    <color name="actionBarDark">#B50000</color>
+    <color name="actionBarDarkDark">#A40000</color>
+    <color name="actionBarTextDark">#000000</color>
+    <color name="textColorDark">#FFFFFF</color>
+    <color name="tileBackgroundDark">#666666</color>
+    <color name="tileBackgroundDarkFocus">#C8C8C8</color>
+    <color name="headerBackgroundDark">#888888</color>
+    <color name="drawerBackgroundDark">#555555</color>
+
+    <style name="AppThemeDark" parent="@style/Theme.AppCompat">
+        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/MyActionBarDark</item>
+        <item name="android:checkboxStyle">@style/customCheckBoxStyleDark</item>
+        <item name="actionBarStyle">@style/MyActionBarDark</item>
+
+        <item name="colorPrimary">@color/actionBarDark</item>
+        <item name="colorPrimaryDark">@color/actionBarDarkDark</item>
+        <item name="android:colorPrimary" tools:ignore="NewApi">@color/actionBarDark</item>
+
+        <item name="android:actionMenuTextColor">@color/actionBarTextDark</item>
+        <item name="android:windowBackground">@color/backgroundDark</item>
+        <item name="android:textColor">@color/textColorDark</item>
+
+        <item name="android:itemBackground">@drawable/item_background_dark</item>
+        <item name="android:buttonStyle">@style/ButtonDark</item>
+        <item name="android:imageButtonStyle">@style/ButtonDark</item>
+        <item name="android:editTextStyle">@style/EditTextDark</item>
+
+        <item name="android:textSize">@dimen/activity_text_size</item>
+
+        <item name="android:textCursorDrawable">@null</item>
+
+        <item name="android:textSelectHandleLeft">@drawable/theme_text_select_handle_left</item>
+        <item name="android:textSelectHandleRight">@drawable/theme_text_select_handle_right</item>
+        <item name="android:textSelectHandle">@drawable/theme_text_select_handle</item>
+
+        <item name="android:seekBarStyle">@style/CustomSeekBar</item>
+
+        <item name="android:textViewStyle">@style/TextViewDark</item>
+
+        <item name="android:textColorPrimary">@color/ab_text_color</item>
+
+        <item name="drawerArrowStyle">@style/DrawerArrowStyleDark</item>
+
+        <item name="android:windowAllowReturnTransitionOverlap" tools:targetApi="lollipop">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap" tools:targetApi="lollipop">true</item>
+
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/actionBarDark</item>
+
+        <!-- Theme dependent images -->
+        <item name="justify_left">@drawable/ic_action_justify_left_white</item>
+        <item name="justify_center">@drawable/ic_action_justify_center_white</item>
+        <item name="justify_right">@drawable/ic_action_justify_right_white</item>
+        <item name="justify_full">@drawable/ic_action_justify_full_white</item>
+
+        <item name="ordered_list">@drawable/ic_action_ordered_list_white</item>
+        <item name="unordered_list">@drawable/ic_action_unordered_list_white</item>
+    </style>
+
+    <style name="DrawerArrowStyleDark" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="MyActionBarDark" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="titleTextStyle">@style/MyTitleTextStyleDark</item>
+    </style>
+
+    <style name="MyTitleTextStyleDark" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/textColorDark</item>
+    </style>
+
+    <style name="customCheckBoxStyleDark" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/custom_checkbox</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">@color/textColorDark</item>
+    </style>
+
+    <style name="ButtonDark" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@color/tileBackgroundDark</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="DialogDark" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/headerBackgroundDark</item>
+
+        <item name="android:textColor">@color/textColorDark</item>
+
+        <item name="android:buttonStyle">@style/ButtonDark</item>
+        <item name="android:editTextStyle">@style/EditTextDark</item>
+        <item name="android:checkboxStyle">@style/customCheckBoxStyleDark</item>
+    </style>
+
+    <style name="EditTextDark" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/textColorDark</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:background">@drawable/edittext_modified_states</item>
+    </style>
+
+    <style name="TextViewDark" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+</resources>

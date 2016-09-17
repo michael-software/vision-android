@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style parent="android:Widget.SeekBar" name="CustomSeekBar">
+        <item name="android:progressDrawable">@drawable/theme_progress_drawable</item>
+        <item name="android:indeterminateDrawable">@drawable/theme_progress_drawable</item>
+        <item name="android:thumb">@drawable/theme_progress_thumb</item>
+        <item name="android:paddingLeft">7dp</item>
+        <item name="android:paddingRight">7dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+</resources>
