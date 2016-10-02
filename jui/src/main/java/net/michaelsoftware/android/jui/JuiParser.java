@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import net.michaelsoftware.android.jui.interfaces.Listener;
+import net.michaelsoftware.android.jui.interfaces.OnValueChangeListener;
 import net.michaelsoftware.android.jui.models.ActionModel;
 import net.michaelsoftware.android.jui.models.ConfigModel;
 import net.michaelsoftware.android.jui.models.ViewModel;
