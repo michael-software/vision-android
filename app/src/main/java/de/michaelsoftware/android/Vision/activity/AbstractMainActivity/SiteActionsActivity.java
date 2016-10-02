@@ -389,8 +389,8 @@ public abstract class SiteActionsActivity extends LoginActivity {
         this.loadMenu();
     }
 
-    @SuppressWarnings("unused") // used by invoke
-    public void autoHideActionbar(String boolString) {
+    /*@SuppressWarnings("unused") // used by invoke
+    public void autoHideActionbar(String boolString) { TODO: include
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()) );
 
         if(boolString.equals("true")) {
@@ -403,7 +403,11 @@ public abstract class SiteActionsActivity extends LoginActivity {
             this.showActionBar();
         }
 
+        this.finish();
+        this.startActivity(new Intent(this, this.getClass()));
+
         this.openPlugin("android","settings");
+    }*/
     }
 
     public void sendMail() {
