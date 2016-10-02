@@ -37,6 +37,9 @@ public class Heading extends JuiView {
             view.setLayoutParams(view_params);
 
             this.setSize((String) hashMap.get("size"));
+
+            if(Tools.isHashmap(hashMap.get("shadow"))) {
+                this.setShadow((HashMap<Object, Object>) hashMap.get("shadow"));
             }
             
             this.properties = hashMap;
@@ -79,5 +82,30 @@ public class Heading extends JuiView {
     public View getView(JuiParser parser) {
 
         return JuiParser.addProperties(view, properties);
+    }
+
+    public void setShadow(HashMap<Object, Object> shadow) {
+
+        int color = Color.BLACK;
+        if(Tools.isString(shadow.get("color"))) {
+            color = Tools.parseColor((String) shadow.get("color"));
+        }
+
+        int offsetX = 3;
+        if(Tools.isInt(shadow.get("x"))) {
+            offsetX = (Integer) shadow.get("x")*2;
+        }
+
+        int offsetY = 3;
+        if(Tools.isInt(shadow.get("y"))) {
+            offsetY = (Integer) shadow.get("y")*2;
+        }
+
+        float scale = 1.5f;
+        if(Tools.isInt(shadow.get("scale"))) {
+            scale = (Integer) shadow.get("scale")*2;
+        }
+
+        view.setShadowLayer(scale, offsetX, offsetY, color);
     }
 }
