@@ -5,11 +5,13 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
 import net.michaelsoftware.android.jui.JuiParser;
 import net.michaelsoftware.android.jui.R;
+import net.michaelsoftware.android.jui.models.NameValue;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,9 +30,11 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -56,6 +60,7 @@ public class HttpPostJsonHelper extends AsyncTask<String, Integer, Object> {
     private Boolean outputString = false;
     private ArrayList<String> dataNames = new ArrayList<>();
     private android.os.Handler timeout;
+    private HashMap<String, String> headers = new HashMap<>();
 
 
     public final static String boundary =  "*****";
@@ -94,7 +99,22 @@ public class HttpPostJsonHelper extends AsyncTask<String, Integer, Object> {
             try {
                 URL url = new URL(urls[0]);
 
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                HttpURLConnection conn = null;
+
+                if (url.getProtocol().toLowerCase().equals("https")) {
+                    conn = (HttpsURLConnection) url.openConnection();
+                } else {
+                    conn = (HttpURLConnection) url.openConnection();
+                }
+
+                if(this.headers.size() > 0) {
+                    for(Map.Entry<String, String> entry : this.headers.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+
+                        conn.setRequestProperty(key, value);
+                    }
+                }
 
                 conn.setReadTimeout(timeoutConnection);
                 conn.setConnectTimeout(timeoutSocket);
@@ -128,29 +148,34 @@ public class HttpPostJsonHelper extends AsyncTask<String, Integer, Object> {
                 writer.flush();
                 writer.close();
                 os.close();
-                int responseCode = conn.getResponseCode();
 
                 String responseString = "";
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+                int responseCode = conn.getResponseCode();
+                if(responseCode == HttpsURLConnection.HTTP_OK) {
                     String line;
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                     while ((line=br.readLine()) != null) {
                         responseString+=line;
                     }
+                } else {
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
 
-                    Log.d(this.toString(), "RESPONSE"+  responseString);
-
-                    if(this.outputString) {
-                        return responseString;
+                    while ((line=br.readLine()) != null) {
+                        responseString+=line;
                     }
+                }
 
-                    JsonParser jsonParser = new JsonParser(responseString);
-                    response = jsonParser.getHashMap();
+                Log.d(this.toString(), "RESPONSE"+  responseString);
+
+                if(this.outputString) {
+                    return responseString;
                 }
-                else {
-                    response = null;
-                }
+
+                JsonParser jsonParser = new JsonParser(responseString);
+                response = jsonParser.getHashMap();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (ProtocolException e) {
@@ -331,6 +356,8 @@ public class HttpPostJsonHelper extends AsyncTask<String, Integer, Object> {
         this.post = postDataParams;
     }
 
+    public void setHeaders(HashMap<String, String> headers) { this.headers = headers; }
+
     public void setKeyIv(String pKey, String pIv) {
         this.key = pKey;
         this.iv = pIv;
@@ -342,6 +369,16 @@ public class HttpPostJsonHelper extends AsyncTask<String, Integer, Object> {
 
     public void addDataName(String name) {
         this.dataNames.add(name);
+    }
+
+    public static String urlEncode(String search) {
+        try {
+            return URLEncoder.encode(search, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     private class CustomRunnable implements Runnable {

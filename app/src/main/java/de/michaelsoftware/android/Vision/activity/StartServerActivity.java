@@ -6,10 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
+
 import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.tools.SecurityHelper;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 import de.michaelsoftware.android.Vision.tools.network.WOLHelper;
 
 public class StartServerActivity extends Activity {

@@ -66,6 +66,7 @@ public class JuiParser {
     private HashMap<String, String> customHttpElements = new HashMap<>();
     private String lastUrl = "http://www.google.de";
     private Listener.OnBeforeParseListener onBeforeParse = null;
+    private HashMap<String, String> customHttpHeaders = new HashMap<>();
 
     public JuiParser(Activity activity, ScrollView scroll, LinearLayout linearLayout) {
         this.activity = activity;
@@ -509,6 +510,7 @@ public class JuiParser {
 
         httpPostJsonHelper.setOutput(this, "submitOutput");
         httpPostJsonHelper.setPost(formData);
+        httpPostJsonHelper.setHeaders(this.customHttpHeaders);
         httpPostJsonHelper.execute(url);
     }
 
@@ -523,6 +525,7 @@ public class JuiParser {
 
         httpPostJsonHelper.setOutput(this, "submitOutput");
         httpPostJsonHelper.setPost(formData);
+        httpPostJsonHelper.setHeaders(this.customHttpHeaders);
         httpPostJsonHelper.execute(url);
     }
 
@@ -577,5 +580,9 @@ public class JuiParser {
 
     public void reload() {
         this.parseUrl(this.lastUrl);
+    }
+
+    public void setCustomHttpHeader(String name, String value) {
+        this.customHttpHeaders.put(name, value);
     }
 }

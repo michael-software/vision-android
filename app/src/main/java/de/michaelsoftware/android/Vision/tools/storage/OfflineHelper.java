@@ -1,12 +1,14 @@
 package de.michaelsoftware.android.Vision.tools.storage;
 
+import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
+
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.activity.AbstractMainActivity.BaseActivity;
 import de.michaelsoftware.android.Vision.activity.MainActivity;
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
 import de.michaelsoftware.android.Vision.tools.Logs;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 
 /**
  * Created by Michael on 20.12.2015.
@@ -35,9 +37,14 @@ public class OfflineHelper {
 
     public void downloadOfflineData(String url) {
         if(dbHelper != null && dbHelper.getData(DatabaseHelper.OFFLINE_DATA, url).equals("")) {
-            HttpPostJsonHelper httpPost = new HttpPostJsonHelper(mainActivity.getLoginHelper());
+
+            HashMap<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "bearer " + mainActivity.getLoginHelper().getAuthtoken());
+
+            HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
             httpPost.setSpecialData(url);
             httpPost.setOutputString(true);
+            httpPost.setHeaders(headers);
             httpPost.setOutput(this, "getOfflineData");
             httpPost.execute(url);
         }
@@ -119,9 +126,13 @@ public class OfflineHelper {
 
     public void downloadParaCache(String url) {
         if(dbHelper.getData(DatabaseHelper.PARA_CACHE_DATA, url).equals("")) {
-            HttpPostJsonHelper httpPost = new HttpPostJsonHelper(mainActivity.getLoginHelper());
+            HashMap<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "bearer " + mainActivity.getLoginHelper().getAuthtoken());
+
+            HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
             httpPost.setSpecialData(url);
             httpPost.setOutputString(true);
+            httpPost.setHeaders(headers);
             httpPost.setOutput(this, "getParaCacheData");
             httpPost.execute(url);
         }
@@ -142,9 +153,13 @@ public class OfflineHelper {
     }
 
     public void downloadOfflineDataAndOpen(String url) {
-        HttpPostJsonHelper httpPost = new HttpPostJsonHelper(mainActivity.getLoginHelper());
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "bearer " + mainActivity.getLoginHelper().getAuthtoken());
+
+        HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
         httpPost.setSpecialData(url);
         httpPost.setOutputString(true);
+        httpPost.setHeaders(headers);
         httpPost.setOutput(this, "getOfflineDataOpen");
         httpPost.execute(url);
     }

@@ -40,20 +40,19 @@ public abstract class SiteActionsActivity extends LoginActivity {
 
 
     public void openHome() {
-        String urlStr = this.loginHelper.getServer() + "ajax.php?show=plugins";
+        String urlStr = this.loginHelper.getServer() + "api/plugins.php";
         String dataString = offlineHelper.getData(urlStr);
 
-        if (dataString.equals("")) {
-            offlineHelper.downloadOfflineData(urlStr);
 
-            HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
-            httpPost.setOutput(this, "openHomePage");
-            httpPost.execute(urlStr);
-        } else {
-            JsonParserAsync jsonParser = new JsonParserAsync();
-            jsonParser.setOutput(this, "openHomePage");
-            jsonParser.execute(dataString);
-        }
+        offlineHelper.downloadOfflineData(urlStr);
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
+
+        HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
+        httpPost.setOutput(this, "openHomePage");
+        httpPost.setHeaders(headers);
+        httpPost.execute(urlStr);
 
         this.mDrawerLayout.closeDrawers();
     }
@@ -230,7 +229,11 @@ public abstract class SiteActionsActivity extends LoginActivity {
     public void openShare(String pParameter) {
         this.disableRefresh();
 
-        HttpPostJsonHelper httpPost = new HttpPostJsonHelper(this.getLoginHelper());
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
+
+        HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
+        httpPost.setHeaders(headers);
         httpPost.setOutput(this, "getContent");
 
         HashMap<String, String> nameValuePair = new HashMap<>();

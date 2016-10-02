@@ -38,6 +38,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,10 +53,10 @@ import de.michaelsoftware.android.Vision.tools.FormatHelper;
 import de.michaelsoftware.android.Vision.tools.LoginHelper;
 import de.michaelsoftware.android.Vision.tools.Logs;
 import de.michaelsoftware.android.Vision.tools.ResourceHelper;
+import de.michaelsoftware.android.Vision.tools.SecurityHelper;
 import de.michaelsoftware.android.Vision.tools.gui.listener.CustomOnActionExpandListener;
 import de.michaelsoftware.android.Vision.tools.gui.listener.CustomOnClickListener;
 import de.michaelsoftware.android.Vision.tools.network.DownloadHelper;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 import de.michaelsoftware.android.Vision.tools.network.JsonParserAsync;
 import de.michaelsoftware.android.Vision.tools.storage.SharedPreferencesHelper;
 import de.michaelsoftware.android.Vision.tools.ThemeUtils;
@@ -143,15 +145,15 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 @Override
                 public void run() {
 
-                    HashMap<String, String> list = new HashMap<>();
-                    list.put("search", search);
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "bearer " + mainActivity.getLoginHelper().getAuthtoken());
 
                     if (loginHelper != null) {
-                        HttpPostJsonHelper postHelper = new HttpPostJsonHelper(loginHelper);
+                        HttpPostJsonHelper postHelper = new HttpPostJsonHelper();
                         postHelper.setSpecialData(search);
                         postHelper.setOutput(mainActivity, "insertSearch");
-                        postHelper.setPost(list);
-                        postHelper.execute(loginHelper.getServer() + "ajax.php?action=search");
+                        postHelper.setHeaders(headers);
+                        postHelper.execute(loginHelper.getServer() + "api/search.php?query=" + HttpPostJsonHelper.urlEncode(search));
                     }
                 }
             };
@@ -208,8 +210,12 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         } else {
             String url = loginHelper.getServer() + "ajax.php?action=share&plugin=" + this.currentName + "&page=" + this.currentView + "&cmd=" + this.currentParameter;
 
-            HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
+            HashMap<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "bearer " + this.getLoginHelper().getAuthtoken());
+
+            HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
             httpPost.setOutput(this, "getShareUrl");
+            httpPost.setHeaders(headers);
             httpPost.execute(url);
         }
     }
@@ -293,18 +299,16 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     public void loadMenu(Boolean pForceReload) {
-        String urlStr = loginHelper.getServer() + "ajax.php?show=plugins";
+        String urlStr = loginHelper.getServer() + "api/plugins.php";
         String dataString = offlineHelper.getData(urlStr);
 
-        if(pForceReload || dataString.equals("")) {
-            offlineHelper.downloadOfflineData(urlStr);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "bearer " + this.getLoginHelper().getAuthtoken());
 
-            HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
-            httpPost.setOutput(this, "getMenuContent");
-            httpPost.execute(urlStr);
-        } else {
-            this.getMenuContent(dataString);
-        }
+        HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
+        httpPost.setOutput(this, "getMenuContent");
+        httpPost.setHeaders(headers);
+        httpPost.execute(urlStr);
     }
 
     public void openPlugin(String pName, String pView) {
@@ -335,7 +339,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         this.currentParameter = pParameter;
 
         if(loginHelper.getServer() != null) {
-            urlStr = loginHelper.getServer() + "ajax.php?plugin=" + pName + "&page=" + pView + "&cmd=" + pParameter + "&get=view";
+            urlStr = loginHelper.getServer() + "api/plugin.php?plugin=" + pName + "&page=" + pView + "&cmd=" + pParameter;
             Logs.toast(MainActivity.this, urlStr, Logs.LENGTH_LONG);
 
             if(this.pluginShareable.contains(pName)) {
@@ -419,6 +423,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         }
     }
 
+    /*
     public void refreshPlugin(String pName, String pView, String pParameter) {
         if(pView == null) pView = "";
         if(pParameter == null) pParameter = "";
@@ -431,22 +436,26 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             this.openPluginNoHistory(pName, pView, pParameter);
         } else if(pName != null) {
             if(data.equals("")) {
-                HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
+                HashMap<String, String> list = new HashMap<>();
+                list.put("authtoken", SecurityHelper.encrypt(this.getLoginHelper().getAuthtoken()));
+
+                HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
                 httpPost.setShowDialog(false);
+                httpPost.setPost(list);
                 httpPost.setOutput(this, "closeRefresh");
                 httpPost.execute(urlStr);
             } else {
                 offlineHelper.downloadOfflineDataAndOpen(urlStr);
             }
         }
-    }
+    }*/
 
     @SuppressWarnings("unused") // used by invoke
     public void refreshCurrentPlugin(String pName) {
         Logs.d(this, "Refresh by Service: " + pName);
         if(pName.equals(this.currentName)) {
             swipeRefreshLayout.setRefreshing(true);
-            refreshPlugin(this.currentName, this.currentView, this.currentParameter);
+            gui.reload();
         }
     }
 
@@ -522,7 +531,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getIdentifier());
 
 
-        String url = loginHelper.getServer() + "ajax.php?action=getFile&file=" + FormatHelper.encodeURI(pPath) + "&authtoken=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
 
 
         Intent intentExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(url) );
@@ -551,14 +560,14 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     private void downloadFile(String pPath) {
-        String url = loginHelper.getServer() + "ajax.php?action=getFile&file=" + FormatHelper.encodeURI(pPath) + "&authtoken=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
 
         DownloadHelper dl = new DownloadHelper(this);
         dl.execute(url);
     }
 
     private void openMusic(String pPath) {
-        String url = loginHelper.getServer() + "ajax.php?action=getFile&file=" + FormatHelper.encodeURI(pPath) + "&authtoken=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
 
         Bundle bundle = new Bundle();
         bundle.putString("URL", url);
@@ -575,7 +584,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     private void openVideo(String pPath) {
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getIdentifier());
 
-        String url = loginHelper.getServer() + "ajax.php?action=getFile&file=" + FormatHelper.encodeURI(pPath) + "&authtoken=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
 
 
         Intent intentExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(url) );
