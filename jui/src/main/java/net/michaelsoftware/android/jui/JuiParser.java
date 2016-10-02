@@ -422,6 +422,13 @@ public class JuiParser {
 
                         }
                     });
+                } else if(view instanceof SpinnerView) {
+                    ((SpinnerView) view).setOnValueChangeListener(new OnValueChangeListener() {
+                        @Override
+                        public void onValueChange(String value) {
+                            JuiAction.call(JuiParser.this, changeAction.replace("this.value", value));
+                        }
+                    });
                 }
             }
 
