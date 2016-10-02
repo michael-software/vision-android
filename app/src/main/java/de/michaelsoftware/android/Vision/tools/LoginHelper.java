@@ -1,5 +1,6 @@
 package de.michaelsoftware.android.Vision.tools;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -9,10 +10,12 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
@@ -25,6 +28,7 @@ import java.util.List;
 
 import de.michaelsoftware.android.Vision.OfflineActivity;
 import de.michaelsoftware.android.Vision.R;
+import de.michaelsoftware.android.Vision.account.AccountGeneral;
 import de.michaelsoftware.android.Vision.activity.AddNewAccountActivity;
 import de.michaelsoftware.android.Vision.activity.LoginSelectActivity;
 import de.michaelsoftware.android.Vision.activity.MainActivity;
@@ -82,6 +86,16 @@ public class LoginHelper {
         httpPost.execute(pServer);
     }
 
+    public void setNewAuthtoken(String newAuthtoken) {
+        this.AUTHTOKEN = newAuthtoken;
+
+        AccountManager accountManager = AccountManager.get(this.activity);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            accountManager.setAuthToken(this.getAccount(), AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, newAuthtoken);
+        }
+    }
+
     private boolean loginUser(String pServer, Account pAccount, String authtoken) {
         Logs.v(this, "Change username");
         USERNAME = LoginHelper.getUsernameFromAccountName(pAccount.name);
@@ -98,10 +112,10 @@ public class LoginHelper {
     }
 
     public static boolean isLoggedIn(HashMap<Object, Object> hashMap, String key, String iv) {
-        if(hashMap.containsKey("status") && hashMap.get("status") instanceof String) {
+        if (hashMap.containsKey("status") && hashMap.get("status") instanceof String) {
             String status = SecurityHelper.decrypt((String) hashMap.get("status"), key, iv);
 
-            if(status != null && status.equals("login")) {
+            if (status != null && status.equals("login")) {
                 return true;
             }
         }
@@ -426,5 +440,9 @@ public class LoginHelper {
                 = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
+    }
+
+    public void setTemporaryAuthtoken(String temporaryAuthtoken) {
+        this.AUTHTOKEN = temporaryAuthtoken;
     }
 }

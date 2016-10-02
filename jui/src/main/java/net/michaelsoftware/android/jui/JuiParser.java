@@ -8,18 +8,21 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.michaelsoftware.android.jui.interfaces.Listener;
 import net.michaelsoftware.android.jui.interfaces.OnValueChangeListener;
 import net.michaelsoftware.android.jui.models.ActionModel;
 import net.michaelsoftware.android.jui.models.ConfigModel;
+import net.michaelsoftware.android.jui.models.NameValue;
 import net.michaelsoftware.android.jui.models.ViewModel;
 import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
 import net.michaelsoftware.android.jui.network.JsonParserAsync;
@@ -165,11 +168,10 @@ public class JuiParser {
     private JuiView parseElement(String type, HashMap<Object, Object> element, boolean allElements) {
         JuiView view = null;
 
-        //Log.d("element", type);
-
         if(allElements) {
             view = this.parseMultiLineElements(type, element);
         }
+
 
         if(view == null) {
             if (Tools.isEqual(type, "text")) {
