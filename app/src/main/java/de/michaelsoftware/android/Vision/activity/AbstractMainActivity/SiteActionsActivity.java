@@ -6,12 +6,13 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
 import de.michaelsoftware.android.Vision.tools.ThemeUtils;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 import de.michaelsoftware.android.Vision.tools.network.JsonParserAsync;
 import de.michaelsoftware.android.Vision.tools.storage.SharedPreferencesHelper;
 
@@ -36,6 +37,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
         juiParserLocal.addAction("activateExternalVideos", 0, this);
         juiParserLocal.addAction("deactivateExternalVideos", 0, this);
         juiParserLocal.addAction("autoHideActionbar", 1, this);
+        juiParserLocal.addAction("changeAuthtoken", 1, this);
     }
 
 
@@ -161,12 +163,12 @@ public abstract class SiteActionsActivity extends LoginActivity {
         } else {
             pString += ",{\"type\":\"button\", \"value\":\"Dunkles Design aktivieren\", \"click\":\"activateDarkMode\"}";
         }
-
+/* TODO: include
         if(autoHideActionbar) {
             pString += ",{\"type\":\"button\", \"value\":\"ActionBar immer einblenden\", \"click\":\"autoHideActionbar('false')\"}";
         } else {
             pString += ",{\"type\":\"button\", \"value\":\"ActionBar automatisch ausblenden\", \"click\":\"autoHideActionbar('true')\"}";
-        }
+        }*/
 
         pString += ",{\"type\":\"hline\"}";
 
@@ -204,7 +206,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
 
         if (developer.equals("1")) {
             pString += ",{\"type\":\"text\", \"value\":\"Entwicklermodus : aktiviert\"}";
-            pString += ",{\"type\":\"text\", \"value\":\"Authtoken : " + loginHelper.getAuthtoken() + "\"}";
+            pString += ",{\"type\":\"input\", \"name\":\"authtoken\", \"label\":\"Authtoken: \", \"value\":\"" + loginHelper.getAuthtoken() + "\", \"change\":\"changeAuthtoken('this.value')\"}";
             pString += ",{\"type\":\"text\", \"value\":\"Die Weitergabe des Authtokens kann zu Sicherheitsproblemen führen.\", \"color\":\"#FF0000\"}";
 
             pString += ",{\"type\":\"button\", \"value\":\"Entwicklermodus deaktivieren\", \"click\":\"deactivateDeveloper\"}";
@@ -408,6 +410,10 @@ public abstract class SiteActionsActivity extends LoginActivity {
 
         this.openPlugin("android","settings");
     }*/
+
+    @SuppressWarnings("unused")
+    public void changeAuthtoken(String value) {
+        loginHelper.setTemporaryAuthtoken(value);
     }
 
     public void sendMail() {
