@@ -120,6 +120,14 @@ public class Tools {
         return Color.BLACK;
     }
 
+    public static boolean isBool(Object object) {
+        if(object instanceof Boolean) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static String getHex(int intColor) {
         return String.format("#%06X", (0xFFFFFF & intColor));
     }
