@@ -471,7 +471,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         if(pName.equals(this.currentName) && pView.equals(this.currentView)) {
             swipeRefreshLayout.setRefreshing(true);
-            refreshPlugin(this.currentName, this.currentView, this.currentParameter);
+            gui.reload();
         }
     }
 
@@ -479,7 +479,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     public void refreshCurrentViewParameter(String pName, String pView, String pParameter) {
         if(pName.equals(this.currentName) && pView.equals(this.currentView) && pParameter.equals(this.currentParameter)) {
             swipeRefreshLayout.setRefreshing(true);
-            refreshPlugin(this.currentName, this.currentView, this.currentParameter);
+            gui.reload();
         }
     }
 
