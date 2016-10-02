@@ -157,6 +157,7 @@ public class JuiParser {
 
     private void clean() {
         this.linearLayout.removeAllViews();
+        this.scrollView.smoothScrollTo(0,0);
     }
 
     public void parse(String json) {
