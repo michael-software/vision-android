@@ -1,5 +1,7 @@
 package de.michaelsoftware.android.Vision.account;
 
+import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -19,7 +21,6 @@ import javax.net.ssl.HttpsURLConnection;
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
 import de.michaelsoftware.android.Vision.tools.LoginHelper;
 import de.michaelsoftware.android.Vision.tools.SecurityHelper;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 import de.michaelsoftware.android.Vision.tools.network.JsonParser;
 
 /**

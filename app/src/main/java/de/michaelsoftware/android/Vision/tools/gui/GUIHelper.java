@@ -3,6 +3,7 @@ package de.michaelsoftware.android.Vision.tools.gui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -11,14 +12,18 @@ import android.widget.Toast;
 
 import net.michaelsoftware.android.jui.JuiParser;
 import net.michaelsoftware.android.jui.interfaces.Listener;
+import net.michaelsoftware.android.jui.models.NameValue;
 import net.michaelsoftware.android.jui.models.ViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.michaelsoftware.android.Vision.R;
 import de.michaelsoftware.android.Vision.activity.AbstractMainActivity.BaseActivity;
 import de.michaelsoftware.android.Vision.activity.MainActivity;
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
+import de.michaelsoftware.android.Vision.tools.LoginHelper;
 import de.michaelsoftware.android.Vision.tools.Logs;
 import de.michaelsoftware.android.Vision.tools.ResourceHelper;
 import de.michaelsoftware.android.Vision.tools.SecurityHelper;
@@ -134,13 +139,27 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
     }
 
     public void parse(String urlStr) {
-        juiParser.setCustomHttpElements("authtoken", SecurityHelper.encrypt(mainActivity.getLoginHelper().getAuthtoken()));
-
+        juiParser.setCustomHttpHeader( "Authorization", "bearer " + mainActivity.getLoginHelper().getAuthtoken() );
         juiParser.parseUrl(urlStr);
     }
 
     @Override
     public void onParseHead(HashMap<Object, Object> hashMap) {
+        if(hashMap.containsKey("status") && hashMap.get("status") instanceof Integer) {
+            int status = (int) hashMap.get("status");
+            if(status == 401) {
+                LoginHelper.deleteAccount(mainActivity, mainActivity.getLoginHelper().getAccount());
+                mainActivity.getLoginHelper().openSelectUserAccount();
+            }
+        }
+
+        if(hashMap.containsKey("jwt") && hashMap.get("jwt") instanceof String) {
+            String newJwt = (String) hashMap.get("jwt");
+            if(!newJwt.equals("")) {
+                mainActivity.getLoginHelper().setNewAuthtoken(newJwt);
+            }
+        }
+
         Object valueBackgroundColor = hashMap.get("bgcolor");
         if (valueBackgroundColor != null && valueBackgroundColor instanceof String) {
             this.scroll.setBackgroundColor(FormatHelper.parseColor((String) valueBackgroundColor));

@@ -54,7 +54,7 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
             maxElements = Tools.getMaxElements(activityHeight, imageWidth, 20);
         }
 
-        backgroundColor      = ResourceHelper.getColor(this.activity, R.color.tileBackgroundLight);
+        backgroundColor      = 0x66000000;
         backgroundColorFocus = ResourceHelper.getColor(this.activity, R.color.tileBackgroundLightFocus);
 
         if(Tools.isHashmap(hashMap.get("value"))) {
@@ -138,6 +138,7 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
                 tv.setGravity(Gravity.CENTER_HORIZONTAL);
                 tv.setTextSize(20);
                 tv.setTypeface(null, Typeface.BOLD);
+                tv.setMaxLines(1);
                 innerLi.addView(tv);
 
                 innerLi.setFocusable(true);

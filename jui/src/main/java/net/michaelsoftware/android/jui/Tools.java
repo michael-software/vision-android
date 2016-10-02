@@ -111,9 +111,9 @@ public class Tools {
 
     /* Color */
     public static int parseColor(String stringColor) {
-        if((stringColor.length() == 4 || stringColor.length() == 7) && stringColor.startsWith("#")) {
+        if((stringColor.length() == 4 || stringColor.length() == 7 || stringColor.length() == 9) && stringColor.startsWith("#")) {
             return Color.parseColor(stringColor);
-        } else if ( (stringColor.length() == 3 || stringColor.length() == 6) && !stringColor.startsWith("#") ) {
+        } else if ( (stringColor.length() == 3 || stringColor.length() == 6 || stringColor.length() == 8) && !stringColor.startsWith("#") ) {
             return Color.parseColor("#" + stringColor);
         }
 
