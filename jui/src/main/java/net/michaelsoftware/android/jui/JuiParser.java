@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import net.michaelsoftware.android.jui.interfaces.Listener;
+import net.michaelsoftware.android.jui.interfaces.OnValueChangeListener;
 import net.michaelsoftware.android.jui.models.ActionModel;
 import net.michaelsoftware.android.jui.models.ConfigModel;
 import net.michaelsoftware.android.jui.models.ViewModel;
@@ -284,7 +285,15 @@ public class JuiParser {
                 view.setBackgroundColor(Tools.parseColor((String) properties.get("background")));
             }
 
+            if(Tools.isBool(properties.get("autofocus")) && (boolean) properties.get("autofocus")) {
+                if(view.isFocusable() || view.isFocusableInTouchMode()) {
+                    view.requestFocus();
+                    view.requestFocusFromTouch();
+                }
+            }
 
+
+            /* MARGIN */
             int offsetY = 0;
             if(view instanceof android.widget.Button) {
                 offsetY = 5;
@@ -315,19 +324,41 @@ public class JuiParser {
                 marginBottom = Tools.getInt(properties.get("marginBottom"), marginBottom)+offsetY;
             }
 
-            if(Tools.isBool(properties.get("autofocus")) && (boolean) properties.get("autofocus")) {
-                if(view.isFocusable() || view.isFocusableInTouchMode()) {
-                    view.requestFocus();
-                    view.requestFocusFromTouch();
-                }
-            }
-
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
+            layoutParams.setMargins(marginLeft*2, marginTop*2, marginRight*2, marginBottom*2);
 
             view.setLayoutParams(layoutParams);
+
+            /* PADDING */
+            int paddingLeft = view.getPaddingLeft(),
+                    paddingTop = view.getPaddingTop(),
+                    paddingRight = view.getPaddingRight(),
+                    paddingBottom = view.getPaddingBottom();
+
+            if (Tools.isInt(properties.get("padding"))) {
+                paddingLeft = paddingTop = paddingRight = paddingBottom = Tools.getInt(properties.get("padding"), 0);
+            }
+
+            if (Tools.isInt(properties.get("paddingTop"))) {
+                paddingTop = Tools.getInt(properties.get("paddingTop"), paddingTop);
+            }
+
+            if (Tools.isInt(properties.get("paddingLeft"))) {
+                paddingLeft = Tools.getInt(properties.get("paddingLeft"), paddingLeft);
+            }
+
+            if (Tools.isInt(properties.get("paddingRight"))) {
+                paddingRight = Tools.getInt(properties.get("paddingRight"), paddingRight);
+            }
+
+            if (Tools.isInt(properties.get("paddingBottom"))) {
+                paddingBottom = Tools.getInt(properties.get("paddingBottom"), paddingBottom);
+            }
+
+            view.setPadding(paddingLeft*2, paddingTop*2, paddingRight*2, paddingBottom*2);
+
 
             if (Tools.isString(properties.get("visible"))) {
                 if (properties.get("visible").equals("away")) {
@@ -390,6 +421,13 @@ public class JuiParser {
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
 
+                        }
+                    });
+                } else if(view instanceof SpinnerView) {
+                    ((SpinnerView) view).setOnValueChangeListener(new OnValueChangeListener() {
+                        @Override
+                        public void onValueChange(String value) {
+                            JuiAction.call(JuiParser.this, changeAction.replace("this.value", value));
                         }
                     });
                 }

@@ -36,8 +36,10 @@ public class Heading extends JuiView {
                     LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(view_params);
 
-            if(!Tools.isString(hashMap.get("size"))) {
-                this.setSize((String) hashMap.get("size"));
+            this.setSize((String) hashMap.get("size"));
+
+            if(Tools.isHashmap(hashMap.get("shadow"))) {
+                this.setShadow((HashMap<Object, Object>) hashMap.get("shadow"));
             }
             
             this.properties = hashMap;
@@ -45,7 +47,7 @@ public class Heading extends JuiView {
     }
 
     private void setSize(String size) {
-        if(Tools.empty(size) || Tools.isEqual(size, "small")) {
+        if(!Tools.empty(size) && Tools.isEqual(size, "small")) {
             if (Build.VERSION.SDK_INT < 23) {
                 view.setTextAppearance(context, android.R.style.TextAppearance_Medium);
             } else {
@@ -71,6 +73,8 @@ public class Heading extends JuiView {
             view = new TextView(context);
 
             this.setValue(value);
+        } else {
+            view = new TextView(context);
         }
     }
 
@@ -78,5 +82,30 @@ public class Heading extends JuiView {
     public View getView(JuiParser parser) {
 
         return JuiParser.addProperties(view, properties);
+    }
+
+    public void setShadow(HashMap<Object, Object> shadow) {
+
+        int color = Color.BLACK;
+        if(Tools.isString(shadow.get("color"))) {
+            color = Tools.parseColor((String) shadow.get("color"));
+        }
+
+        int offsetX = 3;
+        if(Tools.isInt(shadow.get("x"))) {
+            offsetX = (Integer) shadow.get("x")*2;
+        }
+
+        int offsetY = 3;
+        if(Tools.isInt(shadow.get("y"))) {
+            offsetY = (Integer) shadow.get("y")*2;
+        }
+
+        float scale = 1.5f;
+        if(Tools.isInt(shadow.get("scale"))) {
+            scale = (Integer) shadow.get("scale")*2;
+        }
+
+        view.setShadowLayer(scale, offsetX, offsetY, color);
     }
 }

@@ -3,6 +3,7 @@ package net.michaelsoftware.android.jui.views;
 import android.content.Context;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -36,6 +37,8 @@ public class Input extends JuiView {
 
         if (Tools.isString(hashMap.get("preset"))) {
             this.setPreset((String) hashMap.get("preset"));
+        } else {
+            this.setPreset("input");
         }
 
         /* SET VALUE */

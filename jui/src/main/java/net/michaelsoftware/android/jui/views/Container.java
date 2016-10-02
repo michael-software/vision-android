@@ -3,6 +3,7 @@ package net.michaelsoftware.android.jui.views;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import net.michaelsoftware.android.jui.JuiParser;
 import net.michaelsoftware.android.jui.Tools;
@@ -14,6 +15,7 @@ import java.util.HashMap;
  */
 public class Container extends JuiView {
     private HashMap<Object, Object> value = null;
+    private HashMap<Object, Object> properties = null;
 
     public Container(Context activity) {
         super(activity);
@@ -24,13 +26,16 @@ public class Container extends JuiView {
 
         if(Tools.isHashmap(hashMap.get("value"))) {
             this.setValue((HashMap<Object, Object>) hashMap.get("value"));
+
+            properties = hashMap;
         }
     }
 
     @Override
     public View getView(JuiParser parser) {
         if(value != null) {
-            return parser.parseReturn(value);
+            LinearLayout lin =  parser.parseReturn(value);
+            return JuiParser.addProperties(lin, properties);
         }
 
         return null;
