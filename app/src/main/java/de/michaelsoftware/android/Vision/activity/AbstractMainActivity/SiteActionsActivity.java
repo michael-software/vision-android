@@ -61,10 +61,11 @@ public abstract class SiteActionsActivity extends LoginActivity {
 
     @SuppressWarnings("unused") // used by invoke
     public void openHomePage(HashMap<Object, Object> hashMap) {
-        String pString = "{\"data\":";
-        pString += "[{\"type\":\"heading\",\"value\":\"Guten Tag " + loginHelper.getUsername() + "\"}";
-        pString += ",{\"type\":\"text\", \"value\":\"sie sind angemeldet an: " + loginHelper.getServer() + "\"}";
-        pString += ",{\"type\":\"hline\"}";
+        String pString = "{\"data\":[";
+        pString += "{\"type\":\"container\", \"background\":\"#66000000\", \"padding\":20, \"marginTop\":15, \"marginBottom\":15, \"value\":[";
+        pString += "{\"type\":\"heading\",\"value\":\"Guten Tag " + loginHelper.getUsername() + "\"}";
+        pString += ",{\"type\":\"text\", \"align\":\"right\", \"value\":\"" + loginHelper.getServer() + "\"}";
+        pString += "]}";
         pString += ",{\"type\":\"buttonlist\", \"value\":[";
 
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()));
@@ -117,7 +118,10 @@ public abstract class SiteActionsActivity extends LoginActivity {
 
         String pString = "{\"data\":";
 
-        pString += "[{\"type\":\"heading\",\"value\":\"Einstellungen\"}";
+        pString += "[{\"type\":\"heading\",\"value\":\"Einstellungen\"},";
+
+        pString += "{\"type\":\"container\", \"background\":\"#66000000\", \"padding\":20, \"marginTop\":15, \"marginBottom\":15, \"value\":[";
+        pString += "{\"type\":\"heading\", \"value\":\"Allgemein\", \"size\":\"small\"}";
         pString += ",{\"type\":\"text\", \"value\":\"Aktueller Server : " + loginHelper.getServer() + "\"}";
         pString += ",{\"type\":\"text\", \"value\":\"Aktueller Benutzer : " + loginHelper.getUsername() + "\"}";
 
@@ -170,9 +174,9 @@ public abstract class SiteActionsActivity extends LoginActivity {
             pString += ",{\"type\":\"button\", \"value\":\"ActionBar automatisch ausblenden\", \"click\":\"autoHideActionbar('true')\"}";
         }*/
 
-        pString += ",{\"type\":\"hline\"}";
+        pString += "]},{\"type\":\"container\", \"background\":\"#66000000\", \"padding\":20, \"marginTop\":15, \"marginBottom\":15, \"value\":[";
 
-        pString += ",{\"type\":\"headingSmall\", \"value\":\"Medienwiedergabe\"}";
+        pString += "{\"type\":\"heading\", \"value\":\"Medienwiedergabe\", \"size\":\"small\"}";
 
         if(externallyImages) {
             pString += ",{\"type\":\"text\", \"value\":\"Aktuell werden Bilder in einer anderen App dargestellt.\"}";
@@ -190,7 +194,9 @@ public abstract class SiteActionsActivity extends LoginActivity {
             pString += ",{\"type\":\"button\",\"value\":\"Videos in externer App anschauen\",\"click\":\"activateExternalVideos\"}";
         }
 
-        pString += ",{\"type\":\"hline\"}";
+        pString += "]},{\"type\":\"container\", \"background\":\"#66000000\", \"padding\":20, \"marginTop\":15, \"marginBottom\":15, \"value\":[";
+
+        pString += "{\"type\":\"heading\", \"value\":\"Benachrichtigungen\", \"size\":\"small\"}";
 
         if (!notification.equals("0")) {
             pString += ",{\"type\":\"text\", \"value\":\"Benachrichtigungen : aktiviert\"}";
@@ -202,7 +208,9 @@ public abstract class SiteActionsActivity extends LoginActivity {
 
         pString += ",{\"type\":\"text\", \"value\":\"Hinweis: Eine Änderung an den Benachrichtigungseinstellungen kann einige Zeit in Anspruch nehmen, bis sie angewendet wird. Spätestens nach einem Neustart des Gerätes wird die Änderung allerdings angewendet sein.\"}";
 
-        pString += ",{\"type\":\"hline\"}";
+        pString += "]},{\"type\":\"container\", \"background\":\"#66000000\", \"padding\":20, \"marginTop\":15, \"marginBottom\":15, \"value\":[";
+
+        pString += "{\"type\":\"heading\", \"value\":\"Entwickleroptionen\", \"size\":\"small\"}";
 
         if (developer.equals("1")) {
             pString += ",{\"type\":\"text\", \"value\":\"Entwicklermodus : aktiviert\"}";
@@ -215,7 +223,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
             pString += ",{\"type\":\"button\", \"value\":\"Entwicklermodus aktivieren\", \"click\":\"activateDeveloper\"}";
         }
 
-        pString += "]";
+        pString += "]}]";
         pString += ",\"head\":{\"refreshable\":\"FALSE\"}}";
 
         juiParserLocal.parse(pString);
