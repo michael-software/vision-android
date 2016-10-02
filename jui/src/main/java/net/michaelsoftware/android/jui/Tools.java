@@ -125,6 +125,10 @@ public class Tools {
             return true;
         }
 
+        if(object instanceof String && ( ((String) object).toUpperCase().equals("TRUE") || ((String) object).toUpperCase().equals("FALSE") )) {
+            return true;
+        }
+
         return false;
     }
 
@@ -371,17 +375,5 @@ public class Tools {
         }
 
         return newSide1;
-    }
-
-    public static boolean isBool(Object object) {
-        if(object instanceof Boolean) {
-            return true;
-        }
-
-        if(object instanceof String && ( ((String) object).toUpperCase().equals("TRUE") || ((String) object).toUpperCase().equals("FALSE") )) {
-            return true;
-        }
-
-        return false;
     }
 }
