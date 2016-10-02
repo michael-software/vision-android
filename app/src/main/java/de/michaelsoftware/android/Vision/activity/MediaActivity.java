@@ -26,7 +26,6 @@ import android.widget.VideoView;
 
 import de.michaelsoftware.android.Vision.R;
 import de.michaelsoftware.android.Vision.tools.network.DownloadImageTask;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

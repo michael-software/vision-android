@@ -32,7 +32,6 @@ public class JsonParser {
                     hashMap = jsonArrayToHashMap(jsonArray);
                 }
             } catch (JSONException e) {
-                /*
                 hashMap = new HashMap<>();
                     HashMap<Object, Object> hashMapHeading = new HashMap<>();
                     hashMapHeading.put("type","heading");
@@ -43,9 +42,9 @@ public class JsonParser {
                     hashMapText.put("value",jsonStr);
 
                 hashMap.put(0, hashMapHeading);
-                hashMap.put(1, hashMapText);*/
+                hashMap.put(1, hashMapText);
 
-                hashMap = null;
+                //hashMap = null;
 
                 e.printStackTrace();
             }

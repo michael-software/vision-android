@@ -1,6 +1,7 @@
 package net.michaelsoftware.android.jui.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.Gravity;
@@ -45,6 +46,10 @@ public class Text extends JuiView {
                 String appearance = (String) hashMap.get("appearance");
 
                 this.setAppearance(appearance);
+            }
+
+            if(Tools.isHashmap(hashMap.get("shadow"))) {
+                this.setShadow((HashMap<Object, Object>) hashMap.get("shadow"));
             }
 
             this.properties = hashMap;
@@ -95,6 +100,31 @@ public class Text extends JuiView {
                 view.setPaintFlags(view.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }
         }
+    }
+
+    public void setShadow(HashMap<Object, Object> shadow) {
+
+        int color = Color.BLACK;
+        if(Tools.isString(shadow.get("color"))) {
+            color = Tools.parseColor((String) shadow.get("color"));
+        }
+
+        int offsetX = 3;
+        if(Tools.isInt(shadow.get("x"))) {
+            offsetX = (Integer) shadow.get("x")*2;
+        }
+
+        int offsetY = 3;
+        if(Tools.isInt(shadow.get("y"))) {
+            offsetY = (Integer) shadow.get("y")*2;
+        }
+
+        float scale = 1.5f;
+        if(Tools.isInt(shadow.get("scale"))) {
+            scale = (Integer) shadow.get("scale")*2;
+        }
+
+        view.setShadowLayer(scale, offsetX, offsetY, color);
     }
 
     @Override

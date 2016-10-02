@@ -53,7 +53,7 @@ import de.michaelsoftware.android.Vision.tools.storage.SharedPreferencesHelper;
  * Created by Michael on 12.05.2016.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    public boolean AUTO_HIDE_ACTIONBAR = true;
+    //public boolean AUTO_HIDE_ACTIONBAR = true; TODO: include
     public OfflineHelper offlineHelper;
     protected DrawerLayout mDrawerLayout;
     protected Messenger mService = null;
@@ -86,8 +86,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         this.openSelectAccount(getIntent());
 
-        this.supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
-        
+        //this.supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY); TODO: Include
+
         setupActivity();
         setupDrawer();
 
@@ -103,15 +103,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.refresh_layout_linear);
         scrollView = (ScrollView) findViewById(R.id.refresh_layout_scroll);
 
-        swipeRefreshLayout.setProgressViewOffset(true, FormatHelper.getActionBarHeight(this)/2, (int) Math.round(FormatHelper.getActionBarHeight(this)*1.5) );
+        //swipeRefreshLayout.setProgressViewOffset(true, FormatHelper.getActionBarHeight(this)/2, (int) Math.round(FormatHelper.getActionBarHeight(this)*1.5) ); TODO: include
 
         showActionBar();
-        offsetTop = FormatHelper.getActionBarHeight(this);
+        //offsetTop = FormatHelper.getActionBarHeight(this); TODO: include
         linearLayout.setPadding(0, offsetTop, 0, 0);
 
         gui = new GUIHelper(this, linearLayout, scrollView);
         juiParserLocal = new JuiParser(this, scrollView, linearLayout);
 
+        /* TODO: include
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -138,22 +139,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                 return view.onTouchEvent(motionEvent);
             }
-        });
+        });*/
 
         super.onCreate(savedInstanceState);
 
-        SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()));
-        this.AUTO_HIDE_ACTIONBAR = pref.readBoolean("AUTO_HIDE_ACTIONBAR");
+        //SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()));
+        //this.AUTO_HIDE_ACTIONBAR = pref.readBoolean("AUTO_HIDE_ACTIONBAR"); TODO: include
     }
 
-    private void hideActionBar() {
+    /*private void hideActionBar() { TODO: include
         if(AUTO_HIDE_ACTIONBAR) {
             if (getSupportActionBar() != null)
                 getSupportActionBar().hide();
             else if (getActionBar() != null)
                 getActionBar().hide();
         }
-    }
+    }*/
 
     protected void showActionBar() {
         if (getSupportActionBar() != null)
