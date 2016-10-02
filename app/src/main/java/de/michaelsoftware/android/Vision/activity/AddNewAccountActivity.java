@@ -1,5 +1,6 @@
 package de.michaelsoftware.android.Vision.activity;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
@@ -7,9 +8,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -40,11 +43,12 @@ public class AddNewAccountActivity extends Activity {
     private static final String LOG_TAG = AddNewAccountActivity.class.getSimpleName();
     public static final String ARG_ACCOUNT_TYPE = "ARG_ACCOUNT_TYPE";
     public static final String ARG_AUTH_TYPE = "ARG_AUTH_TYPE";
+    public static final int OPEN_SELECT_USERS = 1;
 
     /**
      * The context of the program.
      */
-    private Context context;
+    private Activity context;
 
     /**
      * The user name input by the user.
@@ -87,9 +91,9 @@ public class AddNewAccountActivity extends Activity {
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // Lock the screen orientation
-//        if(getResources().getBoolean(R.bool.portrait_only)){
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        }
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         setContentView(R.layout.add_new_account_layout);
 
@@ -118,8 +122,36 @@ public class AddNewAccountActivity extends Activity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case OPEN_SELECT_USERS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    this.onBackPressed();
+
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    @Override
     public void onBackPressed() {
-        if(accountManager == null) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    OPEN_SELECT_USERS);
+
+            return;
+        }
+
+        if (accountManager == null) {
             accountManager = AccountManager.get(this);
         }
 

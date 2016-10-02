@@ -106,6 +106,25 @@ public abstract class HandleIntentActivity extends BaseActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LoginHelper.OPEN_SELECT_USERS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.loginHelper.openSelectUserAccount();
+                } else {
+                    finish();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         handleIntent(intent, false);

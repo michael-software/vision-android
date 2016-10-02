@@ -37,6 +37,7 @@ import de.michaelsoftware.android.Vision.tools.storage.SharedPreferencesHelper;
  * (e.g. Server-Url, Username, Authtoken)
  */
 public class LoginHelper {
+    public static final int OPEN_SELECT_USERS = 1;
     private Activity activity;
     private AccountManager accountManager;
     private String accountType;
@@ -277,6 +278,13 @@ public class LoginHelper {
     }
 
     public void openSelectUserAccount() {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    OPEN_SELECT_USERS);
+            return;
+        }
+
         Account[] accounts = accountManager.getAccountsByType(accountType);
 
         if (accounts != null && accounts.length > 0 && accounts[0] != null) {
@@ -323,6 +331,13 @@ public class LoginHelper {
     }
 
     public Account getAccount(String user) {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    OPEN_SELECT_USERS);
+            return null;
+        }
+
         Account[] accounts = accountManager.getAccountsByType(accountType);
 
         if (accounts != null && accounts.length > 0 && accounts[0] != null) {
@@ -355,6 +370,13 @@ public class LoginHelper {
     }
 
     public int getAccountCount() {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    OPEN_SELECT_USERS);
+            return 0;
+        }
+
         Account[] accounts = accountManager.getAccountsByType(accountType);
 
         if (accounts != null && accounts.length > 0 && accounts[0] != null) {
@@ -364,11 +386,18 @@ public class LoginHelper {
         return 0;
     }
 
-    public static Object getAccount(Context context, String server, String username) {
+    public static Object getAccount(Activity activity, String server, String username) {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    OPEN_SELECT_USERS);
+            return null;
+        }
+
         String accountName = LoginHelper.getIdentifier(server, username);
 
-        AccountManager accountManager = AccountManager.get(context);
-        Account[] accounts = accountManager.getAccountsByType(context.getResources().getString(R.string.account_type));
+        AccountManager accountManager = AccountManager.get(activity);
+        Account[] accounts = accountManager.getAccountsByType(activity.getResources().getString(R.string.account_type));
         for (Account account : accounts) {
             if (account.name.equalsIgnoreCase(accountName)) {
                 return account;
