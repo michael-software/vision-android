@@ -36,8 +36,7 @@ public class Heading extends JuiView {
                     LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(view_params);
 
-            if(!Tools.isString(hashMap.get("size"))) {
-                this.setSize((String) hashMap.get("size"));
+            this.setSize((String) hashMap.get("size"));
             }
             
             this.properties = hashMap;
@@ -45,7 +44,7 @@ public class Heading extends JuiView {
     }
 
     private void setSize(String size) {
-        if(Tools.empty(size) || Tools.isEqual(size, "small")) {
+        if(!Tools.empty(size) && Tools.isEqual(size, "small")) {
             if (Build.VERSION.SDK_INT < 23) {
                 view.setTextAppearance(context, android.R.style.TextAppearance_Medium);
             } else {
@@ -71,6 +70,8 @@ public class Heading extends JuiView {
             view = new TextView(context);
 
             this.setValue(value);
+        } else {
+            view = new TextView(context);
         }
     }
 
