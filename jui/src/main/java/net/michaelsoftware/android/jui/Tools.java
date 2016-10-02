@@ -111,13 +111,25 @@ public class Tools {
 
     /* Color */
     public static int parseColor(String stringColor) {
-        if((stringColor.length() == 4 || stringColor.length() == 7) && stringColor.startsWith("#")) {
+        if((stringColor.length() == 4 || stringColor.length() == 7 || stringColor.length() == 9) && stringColor.startsWith("#")) {
             return Color.parseColor(stringColor);
-        } else if ( (stringColor.length() == 3 || stringColor.length() == 6) && !stringColor.startsWith("#") ) {
+        } else if ( (stringColor.length() == 3 || stringColor.length() == 6 || stringColor.length() == 8) && !stringColor.startsWith("#") ) {
             return Color.parseColor("#" + stringColor);
         }
 
         return Color.BLACK;
+    }
+
+    public static boolean isBool(Object object) {
+        if(object instanceof Boolean) {
+            return true;
+        }
+
+        if(object instanceof String && ( ((String) object).toUpperCase().equals("TRUE") || ((String) object).toUpperCase().equals("FALSE") )) {
+            return true;
+        }
+
+        return false;
     }
 
     public static String getHex(int intColor) {
@@ -363,17 +375,5 @@ public class Tools {
         }
 
         return newSide1;
-    }
-
-    public static boolean isBool(Object object) {
-        if(object instanceof Boolean) {
-            return true;
-        }
-
-        if(object instanceof String && ( ((String) object).toUpperCase().equals("TRUE") || ((String) object).toUpperCase().equals("FALSE") )) {
-            return true;
-        }
-
-        return false;
     }
 }

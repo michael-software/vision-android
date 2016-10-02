@@ -4,16 +4,19 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+
+import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
 
 import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.listener.OnAuthtokenGetListener;
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
+import de.michaelsoftware.android.Vision.tools.LoginHelper;
 import de.michaelsoftware.android.Vision.tools.gui.GUIHelper;
 import de.michaelsoftware.android.Vision.tools.gui.MethodHelper;
-import de.michaelsoftware.android.Vision.tools.network.HttpPostJsonHelper;
 
 /**
  * Created by Michael on 12.05.2016.
@@ -61,14 +64,18 @@ public abstract class HandleIntentActivity extends BaseActivity {
                             //Uri receivedUri = parcelableIntent.getParcelableExtra(Intent.EXTRA_STREAM);
                             this.receivedIntent = parcelableIntent;
 
-                            String urlStr = loginHelper.getServer() + "ajax.php?show=plugins";
+                            String urlStr = loginHelper.getServer() + "api/plugins.php";
                             String dataString = offlineHelper.getData(urlStr);
 
                             if(dataString.equals("")) {
                                 offlineHelper.downloadOfflineData(urlStr);
 
-                                HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
+                                HashMap<String, String> headers = new HashMap<>();
+                                headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
+
+                                HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
                                 httpPost.setOutput(this, "getMimeContent");
+                                httpPost.setHeaders(headers);
                                 httpPost.execute(urlStr);
                             } else {
                                 this.getMimeContent(dataString);
@@ -102,6 +109,25 @@ public abstract class HandleIntentActivity extends BaseActivity {
                     gui.setCurrentView(null);
                 }
             }*/
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LoginHelper.OPEN_SELECT_USERS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.loginHelper.openSelectUserAccount();
+                } else {
+                    finish();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -142,15 +168,15 @@ public abstract class HandleIntentActivity extends BaseActivity {
 
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            HashMap<String, String> list = new HashMap<>();
-            list.put("search", query);
-
             if(this.loginHelper != null) {
-                HttpPostJsonHelper postHelper = new HttpPostJsonHelper(this.loginHelper);
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
+
+                HttpPostJsonHelper postHelper = new HttpPostJsonHelper();
                 postHelper.setSpecialData(query);
                 postHelper.setOutput(this, "insertSearch");
-                postHelper.setPost(list);
-                postHelper.execute(loginHelper.getServer() + "ajax.php?action=search");
+                postHelper.setHeaders(headers);
+                postHelper.execute(loginHelper.getServer() + "api/search.php?query=" + HttpPostJsonHelper.urlEncode(query));
             }
         } else if (Intent.ACTION_SEND.equals(intent.getAction()) && loginHelper != null) {
             /*if(!startup) {
@@ -163,14 +189,18 @@ public abstract class HandleIntentActivity extends BaseActivity {
                 //Uri receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                 this.receivedIntent = intent;
 
-                String urlStr = loginHelper.getServer() + "ajax.php?show=plugins";
+                String urlStr = loginHelper.getServer() + "api/plugins.php";
                 String dataString = offlineHelper.getData(urlStr);
 
                 if(dataString.equals("")) {
                     offlineHelper.downloadOfflineData(urlStr);
 
-                    HttpPostJsonHelper httpPost = new HttpPostJsonHelper(loginHelper);
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
+
+                    HttpPostJsonHelper httpPost = new HttpPostJsonHelper();
                     httpPost.setOutput(this, "getMimeContent");
+                    httpPost.setHeaders(headers);
                     httpPost.execute(urlStr);
                 } else {
                     this.getMimeContent(dataString);
