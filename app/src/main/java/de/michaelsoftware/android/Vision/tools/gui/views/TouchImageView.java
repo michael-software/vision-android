@@ -50,6 +50,9 @@ public class TouchImageView extends ImageView {
     private static final float SUPER_MIN_MULTIPLIER = .75f;
     private static final float SUPER_MAX_MULTIPLIER = 1.25f;
 
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
     //
     // Scale of image ranges from minScale to maxScale, where minScale == 1
     // when the image is stretched to fit view.
@@ -97,6 +100,7 @@ public class TouchImageView extends ImageView {
     private GestureDetector.OnDoubleTapListener doubleTapListener = null;
     private OnTouchListener userTouchListener = null;
     private OnTouchImageViewListener touchImageViewListener = null;
+    private OnFlingListener userFlingListener = null;
 
     public TouchImageView(Context context) {
         super(context);
@@ -147,6 +151,10 @@ public class TouchImageView extends ImageView {
 
     public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener l) {
         doubleTapListener = l;
+    }
+
+    public void setOnFlingListener(OnFlingListener l) {
+        userFlingListener = l;
     }
 
     @Override
@@ -777,6 +785,15 @@ public class TouchImageView extends ImageView {
             }
             fling = new Fling((int) velocityX, (int) velocityY);
             compatPostOnAnimation(fling);
+
+            if(userFlingListener != null) {
+                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    userFlingListener.onFling(OnFlingListener.FLING_LEFT); // Right to left
+                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    userFlingListener.onFling(OnFlingListener.FLING_RIGHT); // Left to right
+                }
+            }
+
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
@@ -806,6 +823,13 @@ public class TouchImageView extends ImageView {
 
     public interface OnTouchImageViewListener {
         public void onMove();
+    }
+
+    public interface OnFlingListener {
+        int FLING_LEFT = -1;
+        int FLING_RIGHT = 1;
+
+        public void onFling(int flingDirection);
     }
 
     /**
