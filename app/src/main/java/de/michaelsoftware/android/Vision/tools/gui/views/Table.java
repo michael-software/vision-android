@@ -16,6 +16,7 @@ import de.michaelsoftware.android.Vision.tools.gui.listener.CustomOnClickListene
  * Creates a TableView with the specified HashMap
  * Created by Michael on 10.05.2016.
  */
+/*
 public class Table extends TableLayout {
     private final GUIHelper gui;
     private final Context context;
@@ -89,4 +90,4 @@ public class Table extends TableLayout {
                 this.addView(newRow);
             }
     }
-}
+}*/
