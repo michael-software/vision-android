@@ -39,44 +39,45 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
         if(parser.getActivity() instanceof MainActivity) {
             this.activity = (MainActivity) parser.getActivity();
 
-        this.setOrientation(LinearLayout.VERTICAL);
+            this.setOrientation(LinearLayout.VERTICAL);
 
-        li = new LinearLayout(this.activity);
-        li.setOrientation(LinearLayout.HORIZONTAL);
-        li.setGravity(Gravity.CENTER_HORIZONTAL);
+            li = new LinearLayout(this.activity);
+            li.setOrientation(LinearLayout.HORIZONTAL);
+            li.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
+            layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(10, 10, 10, 10);
 
-        int activityWidth = this.activity.getWindow().getDecorView().getWidth();
-        int activityHeight = this.activity.getWindow().getDecorView().getHeight();
+            int activityWidth = this.activity.getWindow().getDecorView().getWidth();
+            int activityHeight = this.activity.getWindow().getDecorView().getHeight();
 
-        if (activityWidth < activityHeight) {
-            maxElements = Tools.getMaxElements(activityWidth, imageWidth, 20);
-        } else {
-            maxElements = Tools.getMaxElements(activityHeight, imageWidth, 20);
-        }
-
-        backgroundColor      = 0x66000000;
-        backgroundColorFocus = ResourceHelper.getColor(this.activity, R.color.tileBackgroundLightFocus);
-
-        if(Tools.isHashmap(hashMap.get("value"))) {
-            HashMap<Object, Object> valueValue = (HashMap<Object, Object>) hashMap.get("value");
-
-            for (int i = 0; i < valueValue.size(); i++) {
-                if (!valueValue.containsKey(i)) continue;
-
-                Object value = valueValue.get(i);
-
-                if (value instanceof HashMap && ((HashMap) value).containsKey("value")) {
-                    this.insertButton((HashMap) value, parser);
-                }
-
-                j++;
+            if (activityWidth < activityHeight) {
+                maxElements = Tools.getMaxElements(activityWidth, imageWidth, 20);
+            } else {
+                maxElements = Tools.getMaxElements(activityHeight, imageWidth, 20);
             }
-        }
 
-        this.addView(li);
+            backgroundColor = 0x66000000;
+            backgroundColorFocus = ResourceHelper.getColor(this.activity, R.color.tileBackgroundLightFocus);
+
+            if (Tools.isHashmap(hashMap.get("value"))) {
+                HashMap<Object, Object> valueValue = (HashMap<Object, Object>) hashMap.get("value");
+
+                for (int i = 0; i < valueValue.size(); i++) {
+                    if (!valueValue.containsKey(i)) continue;
+
+                    Object value = valueValue.get(i);
+
+                    if (value instanceof HashMap && ((HashMap) value).containsKey("value")) {
+                        this.insertButton((HashMap) value, parser);
+                    }
+
+                    j++;
+                }
+            }
+
+            this.addView(li);
+        }
     }
 
     private void insertButton(HashMap value, JuiParser parser) {
