@@ -153,22 +153,22 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
             }
         }
 
-        if(hashMap.containsKey("jwt") && hashMap.get("jwt") instanceof String) {
-            String newJwt = (String) hashMap.get("jwt");
-            if(!newJwt.equals("")) {
-                mainActivity.getLoginHelper().setNewAuthtoken(newJwt);
-            }
-        }
+                if(hashMap.containsKey("jwt") && hashMap.get("jwt") instanceof String) {
+                    String newJwt = (String) hashMap.get("jwt");
+                    if(!newJwt.equals("")) {
+                        mainActivity.getLoginHelper().setNewAuthtoken(newJwt);
+                    }
+                }
 
-        Object valueBackgroundColor = hashMap.get("bgcolor");
-        if (valueBackgroundColor != null && valueBackgroundColor instanceof String) {
-            this.scroll.setBackgroundColor(FormatHelper.parseColor((String) valueBackgroundColor));
-        } else {
-            this.scroll.setBackgroundColor(Color.TRANSPARENT);
-        }
+                Object valueBackgroundColor = hashMap.get("bgcolor");
+                if (valueBackgroundColor != null && valueBackgroundColor instanceof String) {
+                    this.scroll.setBackgroundColor(FormatHelper.parseColor((String) valueBackgroundColor));
+                } else {
+                    this.scroll.setBackgroundColor(Color.TRANSPARENT);
+                }
 
-        if(hashMap.containsKey("refreshable") && hashMap.get("refreshable") instanceof String && ((String) hashMap.get("refreshable")).equalsIgnoreCase("FALSE")) {
-            if(mainActivity instanceof MainActivity) {
+                if(hashMap.containsKey("refreshable") && hashMap.get("refreshable") instanceof String && ((String) hashMap.get("refreshable")).equalsIgnoreCase("FALSE")) {
+                    if(mainActivity instanceof MainActivity) {
                 ((MainActivity) mainActivity).disableRefresh();
             }
         }
