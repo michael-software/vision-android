@@ -293,7 +293,7 @@ public class LoginHelper {
     public void openSelectUserAccount() {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.GET_ACCOUNTS},
                     OPEN_SELECT_USERS);
             return;
         }
@@ -346,7 +346,7 @@ public class LoginHelper {
     public Account getAccount(String user) {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.GET_ACCOUNTS},
                     OPEN_SELECT_USERS);
             return null;
         }
@@ -385,7 +385,7 @@ public class LoginHelper {
     public int getAccountCount() {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.GET_ACCOUNTS},
                     OPEN_SELECT_USERS);
             return 0;
         }
@@ -402,7 +402,7 @@ public class LoginHelper {
     public static Object getAccount(Activity activity, String server, String username) {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.GET_ACCOUNTS},
                     OPEN_SELECT_USERS);
             return null;
         }

@@ -145,7 +145,7 @@ public class AddNewAccountActivity extends Activity {
     public void onBackPressed() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.GET_ACCOUNTS},
                     OPEN_SELECT_USERS);
 
             return;
