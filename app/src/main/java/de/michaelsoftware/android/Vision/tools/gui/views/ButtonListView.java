@@ -2,7 +2,10 @@ package de.michaelsoftware.android.Vision.tools.gui.views;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -109,7 +112,7 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
                     innerLi.setOnClickListener(new CustomOnClickListener(parser, (String) elementClick));
                 }
 
-                if(!image.equals("")) {
+                if(!image.equals("") && Tools.isBase64((String) image)) {
                     Bitmap bm = Tools.baseToBitmap((String) image, 300, 300);
 
                     if(bm != null) {
@@ -127,6 +130,24 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
                         iv.setLayoutParams(parms);
                         innerLi.addView(iv);
                     }
+                } else if(!image.equals("")) {
+                    ImageView iv = new ImageView(this.activity);
+
+                    Display display = parser.getActivity().getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+                    int width = size.x;
+                    int height = size.y;
+
+                    HttpImageAsync httpImageAsync = new HttpImageAsync(iv);
+                    httpImageAsync.execute( net.michaelsoftware.android.jui.Tools.getAbsoluteUrl((String) image, activity.getLoginHelper().getServer()) );
+                    httpImageAsync.setWidth(width);
+                    httpImageAsync.setHeight(height);
+                    //iv.setImageURI(Uri.parse( net.michaelsoftware.android.jui.Tools.getAbsoluteUrl((String) image, "http://test") ));
+
+                    LayoutParams parms = new LayoutParams(imageWidth, imageWidth);
+                    iv.setLayoutParams(parms);
+                    innerLi.addView(iv);
                 } else {
                     ImageView iv = new ImageView(this.activity);
                     //iv.setImageBitmap(ResourceHelper.getBitmap(mainActivity, R.drawable.no_image));
