@@ -45,6 +45,8 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
 
     private JuiParser juiParser;
 
+    private HashMap<Object, Object> juiHead;
+
     public int padding       = 30;
     public int paddingTop    = padding;
     public int paddingLeft   = padding;
@@ -143,8 +145,14 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
         juiParser.parseUrl(urlStr);
     }
 
+    public HashMap<Object, Object> getHeader() {
+        return this.juiHead;
+    }
+
     @Override
     public void onParseHead(HashMap<Object, Object> hashMap) {
+        this.juiHead = hashMap;
+
         if(hashMap.containsKey("status") && hashMap.get("status") instanceof Integer) {
             int status = (int) hashMap.get("status");
             if(status == 401) {
@@ -153,22 +161,22 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
             }
         }
 
-                if(hashMap.containsKey("jwt") && hashMap.get("jwt") instanceof String) {
-                    String newJwt = (String) hashMap.get("jwt");
-                    if(!newJwt.equals("")) {
-                        mainActivity.getLoginHelper().setNewAuthtoken(newJwt);
-                    }
-                }
+        if(hashMap.containsKey("jwt") && hashMap.get("jwt") instanceof String) {
+            String newJwt = (String) hashMap.get("jwt");
+            if(!newJwt.equals("")) {
+                mainActivity.getLoginHelper().setNewAuthtoken(newJwt);
+            }
+        }
 
-                Object valueBackgroundColor = hashMap.get("bgcolor");
-                if (valueBackgroundColor != null && valueBackgroundColor instanceof String) {
-                    this.scroll.setBackgroundColor(FormatHelper.parseColor((String) valueBackgroundColor));
-                } else {
-                    this.scroll.setBackgroundColor(Color.TRANSPARENT);
-                }
+        Object valueBackgroundColor = hashMap.get("bgcolor");
+        if (valueBackgroundColor != null && valueBackgroundColor instanceof String) {
+            this.scroll.setBackgroundColor(FormatHelper.parseColor((String) valueBackgroundColor));
+        } else {
+            this.scroll.setBackgroundColor(Color.TRANSPARENT);
+        }
 
-                if(hashMap.containsKey("refreshable") && hashMap.get("refreshable") instanceof String && ((String) hashMap.get("refreshable")).equalsIgnoreCase("FALSE")) {
-                    if(mainActivity instanceof MainActivity) {
+        if(hashMap.containsKey("refreshable") && hashMap.get("refreshable") instanceof String && ((String) hashMap.get("refreshable")).equalsIgnoreCase("FALSE")) {
+            if(mainActivity instanceof MainActivity) {
                 ((MainActivity) mainActivity).disableRefresh();
             }
         }
