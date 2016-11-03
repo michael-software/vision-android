@@ -154,6 +154,18 @@ public class MediaActivity extends Activity {
             }
         });
 
+        mContentViewImage.setOnFlingListener(new TouchImageView.OnFlingListener() {
+            @Override
+            public void onFling(int flingDirection) {
+
+                if (flingDirection == TouchImageView.OnFlingListener.FLING_LEFT && !mContentViewImage.isZoomed() ) {
+                    nextImage(null);
+                } else if(flingDirection == TouchImageView.OnFlingListener.FLING_RIGHT && !mContentViewImage.isZoomed() ) {
+                    lastImage(null);
+                }
+            }
+        });
+
 
         mContentViewVideo.setOnTouchListener(new View.OnTouchListener() {
             @Override
