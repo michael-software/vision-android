@@ -38,8 +38,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import net.michaelsoftware.android.jui.Tools;
+import net.michaelsoftware.android.jui.network.HttpImageAsync;
 import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -193,7 +196,6 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             this.openPlugin("plg_user");
         } else if(id == de.michaelsoftware.android.Vision.R.id.action_add_shortcut) {
             this.addShortcut();
-            this.moveTaskToBack(true);
         } else if(id == de.michaelsoftware.android.Vision.R.id.action_share) {
             this.sharePlugin();
         } else if(id == R.id.action_feedback) {
@@ -702,15 +704,43 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         Bitmap icon;
         if(pluginListImages != null && pluginListImages.containsKey(this.currentName)) {
-            icon = FormatHelper.baseToBitmap(pluginListImages.get(this.currentName), 192, 192);
 
-            if(icon == null) {
-                icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+            String urlStr = pluginListImages.get(this.currentName);
+
+            if(Tools.isBase64(urlStr)) {
+                icon = FormatHelper.baseToBitmap(urlStr, 192, 192);
+
+                if (icon == null) {
+                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+                }
+
+                this.createShortcut(shortcutName, methode, icon);
+            } else {
+
+                HttpImageAsync httpImageAsync = new HttpImageAsync(this, "createShortcut");
+
+                ArrayList<String> array = new ArrayList<>();
+                array.add(shortcutName);
+                array.add(methode);
+
+                httpImageAsync.setSpecialData(array);
+                httpImageAsync.execute( net.michaelsoftware.android.jui.Tools.getAbsoluteUrl(urlStr, this.loginHelper.getServer()) );
             }
         } else {
             icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+            this.createShortcut(shortcutName, methode, icon);
         }
 
+        //Logs.d(this, add.getExtras().toString());
+    }
+
+    public void createShortcut(Bitmap icon, ArrayList<String> array) {
+        if(array.size() == 2) {
+            this.createShortcut(array.get(0), array.get(1), icon);
+        }
+    }
+
+    private void createShortcut(String shortcutName, String methode, Bitmap icon) {
         icon = Bitmap.createScaledBitmap(icon, 128, 128, true);
 
         Intent shortcutIntent = new Intent(this.getApplicationContext(), MainActivity.class);
@@ -728,7 +758,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         add.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         sendBroadcast(add);
 
-        Logs.d(this, add.getExtras().toString());
+        this.moveTaskToBack(true);
     }
 
     public void getMenuContent(String pResult) {  // Get JSON for the menu
