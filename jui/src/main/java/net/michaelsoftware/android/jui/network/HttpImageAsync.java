@@ -68,15 +68,17 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
         Bitmap image = null;
 
 
-        Log.d("test", params[0]);
-
-
         String urlToImage = params[0];
         try {
             url = new URL(urlToImage);
 
             File folder = this.getFolder(url);
-            File file = this.getFile(url);
+
+
+            File file = null;
+            if(folder != null) {
+                file = this.getFile(url);
+            }
 
 
             if(file != null && file.exists() && file.isFile()) {
@@ -146,9 +148,11 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
     private File getFolder(URL url) {
         String folder = url.getHost() + "/cache/" + Tools.getPath( url.getPath() );
         File fileFolder = new File(SDCardRoot, folder);
-        fileFolder.mkdirs();
+        if(fileFolder.mkdirs()) {
+            return fileFolder;
+        }
 
-        return fileFolder;
+        return null;
     }
 
 
@@ -160,9 +164,12 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
 
         File fileFile = new File(SDCardRoot, file);
         try {
-            if(fileFile.exists() || fileFile.createNewFile())
-            {
+            if(fileFile.exists()) {
                 return fileFile;
+            } else if(fileFile.createNewFile() && fileFile.exists()) {
+                return fileFile;
+            } else {
+                return null;
             }
         } catch (IOException e) {
             e.printStackTrace();
