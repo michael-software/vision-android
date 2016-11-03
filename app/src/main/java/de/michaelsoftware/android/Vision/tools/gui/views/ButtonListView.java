@@ -12,17 +12,19 @@ import android.widget.TextView;
 import net.michaelsoftware.android.jui.JuiParser;
 import net.michaelsoftware.android.jui.Tools;
 import net.michaelsoftware.android.jui.listeners.CustomOnClickListener;
+import net.michaelsoftware.android.jui.network.HttpImageAsync;
 
 import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.R;
+import de.michaelsoftware.android.Vision.activity.MainActivity;
 import de.michaelsoftware.android.Vision.tools.ResourceHelper;
 
 /**
  * Created by Michael on 13.06.2016.
  */
 public class ButtonListView extends LinearLayout implements View.OnFocusChangeListener {
-    private Activity activity;
+    private MainActivity activity;
     private int maxElements = 1;
     private int backgroundColor;
     private int backgroundColorFocus;
@@ -34,7 +36,8 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
     public ButtonListView(JuiParser parser, HashMap<Object, Object> hashMap) {
         super(parser.getActivity());
 
-        this.activity = parser.getActivity();
+        if(parser.getActivity() instanceof MainActivity) {
+            this.activity = (MainActivity) parser.getActivity();
 
         this.setOrientation(LinearLayout.VERTICAL);
 
