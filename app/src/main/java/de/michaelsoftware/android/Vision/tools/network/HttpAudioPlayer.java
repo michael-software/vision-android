@@ -9,6 +9,7 @@ import android.os.PowerManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.michaelsoftware.android.Vision.service.AudioService;
@@ -42,6 +43,7 @@ public class HttpAudioPlayer {
     private boolean isPrepared = false;
     private String fileName = "";
     private List<OnEndedListener> endedListener = new ArrayList<>();
+    private HashMap<String, String> headers = new HashMap<>();
 
     public HttpAudioPlayer(Context pO) {
         this.mp = new MediaPlayer();
@@ -65,7 +67,7 @@ public class HttpAudioPlayer {
         try {
             this.mp.reset();
             this.mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            this.mp.setDataSource(o, Uri.parse(uri));
+            this.mp.setDataSource(o, Uri.parse(uri), this.headers);
             this.mp.prepareAsync();
 
             this.mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -231,5 +233,9 @@ public class HttpAudioPlayer {
 
     public void setOnEndedListener(OnEndedListener onEndedListener) {
         this.endedListener.add(onEndedListener);
+    }
+
+    public void setHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 }

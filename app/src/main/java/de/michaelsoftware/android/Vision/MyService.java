@@ -115,6 +115,8 @@ public class MyService extends AudioService {
                 case MSG_SET_INT_VALUE:
                     break;
                 case MSG_ACTION_PLAY:
+                    if(msg.getData().containsKey("Authorization"))
+                        headers.put("Authorization", msg.getData().getString("Authorization"));
                     if(msg.getData().containsKey("URL"))
                         playAudio(msg.getData().getString("URL"));
                     break;

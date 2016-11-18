@@ -533,7 +533,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getIdentifier());
 
 
-        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath);
 
 
         Intent intentExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(url) );
@@ -550,6 +550,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             Intent intent = new Intent(MainActivity.this, MediaActivity.class);
                 Bundle b = new Bundle();
                 b.putString("image", url);
+                b.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
             intent.putExtras(b);
             startActivity(intent);
         }
@@ -562,17 +563,22 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     private void downloadFile(String pPath) {
-        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath);
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
 
         DownloadHelper dl = new DownloadHelper(this);
+        dl.setHeaders(headers);
         dl.execute(url);
     }
 
     private void openMusic(String pPath) {
-        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath); //  + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken())
 
-        Bundle bundle = new Bundle();
-        bundle.putString("URL", url);
+            Bundle bundle = new Bundle();
+            bundle.putString("URL", url);
+            bundle.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
 
         Message message = Message.obtain(null, MyService.MSG_ACTION_PLAY);
         message.setData(bundle);
@@ -601,8 +607,9 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             startActivity(intentExternally);
         } else {
             Intent intent = new Intent(MainActivity.this, MediaActivity.class);
-            Bundle b = new Bundle();
-            b.putString("video", url);
+                Bundle b = new Bundle();
+                b.putString("video", url);
+                b.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
             intent.putExtras(b);
             startActivity(intent);
         }
@@ -1023,7 +1030,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
             for(int i  = 0, x = gallery.size(); i < x; i++) {
                 if(gallery.containsKey(i) && Tools.isString(gallery.get(i)) ) {
-                    String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI((String) gallery.get(i)) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+                    String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI((String) gallery.get(i));
                     array.add(url);
                 }
             }
@@ -1034,9 +1041,10 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 }
 
                 Intent intent = new Intent(MainActivity.this, MediaActivity.class);
-                Bundle b = new Bundle();
-                b.putStringArrayList("images", array);
-                b.putInt("index", index);
+                    Bundle b = new Bundle();
+                    b.putStringArrayList("images", array);
+                    b.putInt("index", index);
+                    b.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
                 intent.putExtras(b);
                 startActivity(intent);
             }
