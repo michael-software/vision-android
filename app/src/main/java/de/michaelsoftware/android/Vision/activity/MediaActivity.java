@@ -23,6 +23,7 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.michaelsoftware.android.Vision.R;
 import de.michaelsoftware.android.Vision.tools.gui.views.TouchImageView;
@@ -122,6 +123,8 @@ public class MediaActivity extends Activity {
         }
     };
 
+    private HashMap<String, String> headers = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,10 +191,16 @@ public class MediaActivity extends Activity {
 
         if(getIntent().getExtras() != null) {
             final Bundle extras = getIntent().getExtras();
+
+            if(getIntent().hasExtra("Authorization")) {
+                headers.put("Authorization", extras.getString("Authorization"));
+            }
+
             if(getIntent().hasExtra("image")) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
                 DownloadImageTask downloadImageTask = new DownloadImageTask(mContentViewImage, this);
+                downloadImageTask.setCustomHttpHeaders(this.headers);
                 downloadImageTask.execute(extras.getString("image"));
 
                 mContentViewImage.setVisibility(View.VISIBLE);
@@ -368,6 +377,7 @@ public class MediaActivity extends Activity {
             index++;
 
             DownloadImageTask downloadImageTask = new DownloadImageTask(mContentViewImage, this);
+            downloadImageTask.setCustomHttpHeaders(this.headers);
             downloadImageTask.execute(this.images.get(index));
         }
 
@@ -379,6 +389,7 @@ public class MediaActivity extends Activity {
             index--;
 
             DownloadImageTask downloadImageTask = new DownloadImageTask(mContentViewImage, this);
+            downloadImageTask.setCustomHttpHeaders(this.headers);
             downloadImageTask.execute(this.images.get(index));
         }
 

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import net.michaelsoftware.android.jui.Tools;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -27,6 +29,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -43,6 +46,7 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
 
     File SDCardRoot = Environment.getExternalStorageDirectory().getAbsoluteFile();
     private ArrayList<String> specialData;
+    private HashMap<String, String> headers = new HashMap<>();
 
 
     public HttpImageAsync(ImageView imageView) {
@@ -61,6 +65,8 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    public void setHeaders(HashMap<String, String> headers) { this.headers = headers; }
 
     @Override
     protected Bitmap doInBackground(String... params) {
@@ -101,42 +107,8 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
 
 
             } else {
-
-                URLConnection urlConnection = url.openConnection();
-                InputStream inStream = url.openConnection().getInputStream();
-
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-
-                if (this.height > 0 && this.width > 0) {
-                    options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeStream(inStream, null, options);
-
-                    options.inSampleSize = Tools.calculateInSampleSize(options, this.width, this.height);
-                }
-
-                // Decode bitmap with inSampleSize set
-                options.inJustDecodeBounds = false;
-                image = BitmapFactory.decodeStream(urlConnection.getInputStream(), null, options);
-
-
-                if (file != null) {
-                    FileOutputStream fileOutput = new FileOutputStream(file);
-                    InputStream inputStream = urlConnection.getInputStream();
-                    int totalSize = urlConnection.getContentLength();
-                    int downloadedSize = 0;
-                    byte[] buffer = new byte[1024];
-                    int bufferLength = 0;
-                    while ((bufferLength = inputStream.read(buffer)) > 0) {
-                        fileOutput.write(buffer, 0, bufferLength);
-                        downloadedSize += bufferLength;
-                        Log.i("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
-                    }
-                    fileOutput.close();
-                }
-
+                return this.downloadAndReturn(folder, file, url);
             }
-
-            //image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -145,34 +117,132 @@ public class HttpImageAsync extends AsyncTask<String,Void,Bitmap> {
         return image;
     }
 
+    private Bitmap downloadAndReturn(File folder, File file, URL url) throws IOException {
+        Bitmap image = null;
+
+
+        URLConnection urlConnection = url.openConnection();
+
+        if(this.headers.size() > 0) {
+            for(Map.Entry<String, String> entry : this.headers.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                urlConnection.setRequestProperty(key, value);
+            }
+        }
+
+        int totalSize = urlConnection.getContentLength();
+
+        BufferedInputStream inStream = new BufferedInputStream(urlConnection.getInputStream());
+        inStream.mark(1024);
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+
+        if (this.height > 0 && this.width > 0) {
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(inStream, null, options);
+
+            options.inSampleSize = Tools.calculateInSampleSize(options, this.width, this.height);
+            //options.inSampleSize = 3;
+        }
+
+
+        //Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        image = BitmapFactory.decodeStream(url.openConnection().getInputStream(), null, options);
+
+
+        Log.d("download Image", url.toString());
+        if (folder != null && file == null) {
+            file = this.createFile(url);
+        }
+
+        if (file != null) {
+            inStream.reset();
+
+            FileOutputStream fileOutput = new FileOutputStream(file);
+            int downloadedSize = 0;
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            //Log.d("Test", inputStream.read(buffer)+"");
+            while ((bufferLength = inStream.read(buffer)) > 0) {
+                fileOutput.write(buffer, 0, bufferLength);
+                downloadedSize += bufferLength;
+                Log.d("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
+            }
+            fileOutput.close();
+        }
+
+        return image;
+    }
+
+    private File createFile(URL url) {
+        String file = ".jui/" + url.getHost() + "/cache/" + Tools.getPath( url.getPath() ) + Tools.getFilename( url.getFile(), url.getQuery());
+        File fileFile = new File(SDCardRoot, file);
+
+        if(fileFile.isDirectory()) {
+            return null;
+        }
+
+         try {
+             if(fileFile.exists()) {
+                 return fileFile;
+             } else if(fileFile.createNewFile() && fileFile.exists()) {
+                return fileFile;
+             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
     private File getFolder(URL url) {
-        String folder = url.getHost() + "/cache/" + Tools.getPath( url.getPath() );
+        String folder = ".jui/" + url.getHost() + "/cache/" + Tools.getPath( url.getPath() );
         File fileFolder = new File(SDCardRoot, folder);
-        if(fileFolder.mkdirs()) {
+
+        if(fileFolder.isFile()) {
+            return null;
+        }
+
+        if(fileFolder.isDirectory()) {
+            return fileFolder;
+        } else if(fileFolder.mkdirs()) {
+            this.createHideFile();
+
             return fileFolder;
         }
 
         return null;
     }
 
+    private void createHideFile() {
+        File output = new File(SDCardRoot, ".jui/.nomedia");
+        if(!output.exists() && !output.isFile()) {
+            try {
+                output.createNewFile();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 
     private File getFile(URL url) {
-        String file = url.getHost() + "/cache/" + Tools.getPath( url.getPath() ) + Tools.getFilename( url.getFile(), url.getQuery());
+        String file = ".jui/" + url.getHost() + "/cache/" + Tools.getPath( url.getPath() ) + Tools.getFilename( url.getFile(), url.getQuery());
         //String filename="downloadedFile.png";
-        Log.i("Local filename:",""+file);
-
-
         File fileFile = new File(SDCardRoot, file);
-        try {
-            if(fileFile.exists()) {
-                return fileFile;
-            } else if(fileFile.createNewFile() && fileFile.exists()) {
-                return fileFile;
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if(fileFile.isDirectory()) {
+            return null;
+        }
+
+
+        if(fileFile.exists()) {
+            return fileFile;
         }
 
         return null;

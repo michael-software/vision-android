@@ -140,6 +140,7 @@ public class ButtonListView extends LinearLayout implements View.OnFocusChangeLi
                     int height = size.y;
 
                     HttpImageAsync httpImageAsync = new HttpImageAsync(iv);
+                    httpImageAsync.setHeaders(parser.getCustomHttpHeaders());
                     httpImageAsync.execute( net.michaelsoftware.android.jui.Tools.getAbsoluteUrl((String) image, activity.getLoginHelper().getServer()) );
                     httpImageAsync.setWidth(width);
                     httpImageAsync.setHeight(height);

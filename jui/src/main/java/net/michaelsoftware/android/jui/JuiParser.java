@@ -588,4 +588,8 @@ public class JuiParser {
     public void setCustomHttpHeader(String name, String value) {
         this.customHttpHeaders.put(name, value);
     }
+
+    public HashMap<String, String> getCustomHttpHeaders() {
+        return customHttpHeaders;
+    }
 }
