@@ -1011,4 +1011,35 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         MenuItem item = this.mMenu.findItem(R.id.action_share);
         item.setVisible(false);
     }
+
+    @SuppressWarnings("unused")
+    public void openGallery(String galleryId, String pIndex) {
+        HashMap<Object, Object> header = gui.getHeader();
+
+        if(header.containsKey(galleryId) && Tools.isHashmap(header.get(galleryId))) {
+            int index = Tools.getInt(pIndex, 0);
+            HashMap<Object, Object> gallery = (HashMap<Object, Object>) header.get(galleryId);
+            ArrayList<String> array = new ArrayList<>();
+
+            for(int i  = 0, x = gallery.size(); i < x; i++) {
+                if(gallery.containsKey(i) && Tools.isString(gallery.get(i)) ) {
+                    String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI((String) gallery.get(i)) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+                    array.add(url);
+                }
+            }
+
+            if(array.size() > 0) {
+                if(array.size()-1 < index) {
+                    index = array.size()-1;
+                }
+
+                Intent intent = new Intent(MainActivity.this, MediaActivity.class);
+                Bundle b = new Bundle();
+                b.putStringArrayList("images", array);
+                b.putInt("index", index);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        }
+    }
 }

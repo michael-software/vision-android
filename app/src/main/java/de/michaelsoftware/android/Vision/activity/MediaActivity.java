@@ -14,17 +14,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.util.ArrayList;
+
 import de.michaelsoftware.android.Vision.R;
+import de.michaelsoftware.android.Vision.tools.gui.views.TouchImageView;
 import de.michaelsoftware.android.Vision.tools.network.DownloadImageTask;
 
 /**
@@ -50,9 +51,13 @@ public class MediaActivity extends Activity {
      */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
-    private ImageView mContentViewImage;
+    private TouchImageView mContentViewImage;
+    private ImageView mContentViewImageLast;
+    private ImageView mContentViewImageNext;
     private VideoView mContentViewVideo;
     private MediaController mediaController = null;
+    private ArrayList<String> images = null;
+    private int index = 0;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -129,7 +134,9 @@ public class MediaActivity extends Activity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentViewImage = (ImageView) findViewById(R.id.fullscreen_content_image);
+        mContentViewImage = (TouchImageView) findViewById(R.id.fullscreen_content_image);
+        mContentViewImageLast = (ImageView) findViewById(R.id.fullscreen_content_image_last);
+        mContentViewImageNext = (ImageView) findViewById(R.id.fullscreen_content_image_next);
         mContentViewVideo = (VideoView) findViewById(R.id.fullscreen_content_video);
 
         mContentViewVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -139,12 +146,23 @@ public class MediaActivity extends Activity {
             }
         });
 
-
         // Set up the user interaction to manually show or hide the system UI.
         mContentViewImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
+            }
+        });
+
+        mContentViewImage.setOnFlingListener(new TouchImageView.OnFlingListener() {
+            @Override
+            public void onFling(int flingDirection) {
+
+                if (flingDirection == TouchImageView.OnFlingListener.FLING_LEFT && !mContentViewImage.isZoomed() ) {
+                    nextImage(null);
+                } else if(flingDirection == TouchImageView.OnFlingListener.FLING_RIGHT && !mContentViewImage.isZoomed() ) {
+                    lastImage(null);
+                }
             }
         });
 
@@ -177,6 +195,8 @@ public class MediaActivity extends Activity {
                 downloadImageTask.execute(extras.getString("image"));
 
                 mContentViewImage.setVisibility(View.VISIBLE);
+                mContentViewImageNext.setVisibility(View.GONE);
+                mContentViewImageLast.setVisibility(View.GONE);
                 mContentViewVideo.setVisibility(View.GONE);
             } else if(getIntent().hasExtra("video")) {
 
@@ -212,6 +232,18 @@ public class MediaActivity extends Activity {
                         playVideo(extras.getString("video"));
                     }
 
+            } else if(getIntent().hasExtra("images") && getIntent().hasExtra("index")) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
+                this.images = extras.getStringArrayList("images");
+                this.index = extras.getInt("index")-1;
+
+                mContentViewImage.setVisibility(View.VISIBLE);
+                mContentViewImageNext.setVisibility(View.VISIBLE);
+                mContentViewImageLast.setVisibility(View.VISIBLE);
+                mContentViewVideo.setVisibility(View.GONE);
+
+                this.nextImage(null);
             } else {
                 finish();
             }
@@ -239,6 +271,8 @@ public class MediaActivity extends Activity {
         mContentViewVideo.setVideoURI(vidUri);
 
         mContentViewImage.setVisibility(View.GONE);
+        mContentViewImageLast.setVisibility(View.GONE);
+        mContentViewImageNext.setVisibility(View.GONE);
         mContentViewVideo.setVisibility(View.VISIBLE);
     }
 
@@ -326,6 +360,41 @@ public class MediaActivity extends Activity {
     public void close(View view) {
         if(view.getId() == R.id.dummy_button) {
             finish();
+        }
+    }
+
+    public void nextImage(View view) {
+        if(this.images.size() > this.index+1) {
+            index++;
+
+            DownloadImageTask downloadImageTask = new DownloadImageTask(mContentViewImage, this);
+            downloadImageTask.execute(this.images.get(index));
+        }
+
+        proofDirections();
+    }
+
+    public void lastImage(View view) {
+        if(this.index-1 >= 0) {
+            index--;
+
+            DownloadImageTask downloadImageTask = new DownloadImageTask(mContentViewImage, this);
+            downloadImageTask.execute(this.images.get(index));
+        }
+
+        proofDirections();
+    }
+
+    public void proofDirections() {
+        if(this.index-1 < 0) {
+            mContentViewImageLast.setVisibility(View.GONE);
+            mContentViewImageNext.setVisibility(View.VISIBLE);
+        } else if(this.images.size() <= this.index+1) {
+            mContentViewImageLast.setVisibility(View.VISIBLE);
+            mContentViewImageNext.setVisibility(View.GONE);
+        } else {
+            mContentViewImageLast.setVisibility(View.VISIBLE);
+            mContentViewImageNext.setVisibility(View.VISIBLE);
         }
     }
 }
