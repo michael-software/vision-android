@@ -28,7 +28,7 @@ public class Checkbox extends JuiView {
             this.setName((String) hashMap.get("name"));
 
             if (!Tools.empty(hashMap.get("checked"))) {
-                if (Tools.isString(hashMap.get("checked")) && ((String) hashMap.get("checked")).equals("true")) {
+                if (Tools.isBool(hashMap.get("checked")) && ((boolean) hashMap.get("checked"))) {
                     this.setChecked(true);
                 }
             }
