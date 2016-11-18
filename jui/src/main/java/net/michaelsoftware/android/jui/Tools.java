@@ -276,7 +276,7 @@ public class Tools {
 
     public static boolean isBase64(String value) {
         if(Tools.isString(value)) {
-            int length = value.indexOf(",")-1;
+            int length = value.indexOf(",");
 
             if(length > 0) {
                 value = value.substring(0, length);
