@@ -69,6 +69,8 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
         this.scroll = pScroll;
 
         juiParser = new JuiParser(main, this.scroll, this.linear);
+        juiParser.addAction("openPlugin", 1, mainActivity);
+        juiParser.addAction("openPlugin", 2, mainActivity);
         juiParser.addAction("openPlugin", 3, mainActivity);
         juiParser.addAction("openMedia", 2, mainActivity);
         juiParser.addAction("openGallery", 2, mainActivity);
