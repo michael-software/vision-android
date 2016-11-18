@@ -74,6 +74,7 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
         juiParser.addAction("openPlugin", 3, mainActivity);
         juiParser.addAction("openMedia", 2, mainActivity);
         juiParser.addAction("openGallery", 2, mainActivity);
+        juiParser.addAction("sendAsync", 2, mainActivity);
 
         juiParser.addElement(new ViewModel("editor", "ed", Editor.class));
         juiParser.addElement(new ViewModel("buttonlist", "btl", ButtonList.class));
