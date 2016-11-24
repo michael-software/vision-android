@@ -181,7 +181,11 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         int id = item.getItemId();
 
-        if (id == de.michaelsoftware.android.Vision.R.id.action_settings) {
+        if (id == android.R.id.home && !isDrawerOpen) {
+            historyHelper.openLastEntry();
+        } else if(id == android.R.id.home) {
+            mDrawerLayout.closeDrawers();
+        } else if (id == de.michaelsoftware.android.Vision.R.id.action_settings) {
             this.openPlugin("android", "settings");
             return true;
         } else if (id == de.michaelsoftware.android.Vision.R.id.action_add_account) {
@@ -239,7 +243,11 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
     @Override
     public void onBackPressed() {
-        historyHelper.openLastEntry();
+        if(isDrawerOpen) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            historyHelper.openLastEntry();
+        }
     }
     /* End Menu Section */
 
