@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -82,6 +83,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     private String shareName;
     private String sharePage;
     private String shareCommand;
+    private boolean isDrawerOpen = false;
 
 
     @Override
@@ -180,7 +182,11 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         int id = item.getItemId();
 
-        if (id == de.michaelsoftware.android.Vision.R.id.action_settings) {
+        if (id == android.R.id.home && !isDrawerOpen) {
+            historyHelper.openLastEntry();
+        } else if(id == android.R.id.home) {
+            mDrawerLayout.closeDrawers();
+        } else if (id == de.michaelsoftware.android.Vision.R.id.action_settings) {
             this.openPlugin("android", "settings");
             return true;
         } else if (id == de.michaelsoftware.android.Vision.R.id.action_add_account) {
@@ -238,7 +244,11 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
     @Override
     public void onBackPressed() {
-        historyHelper.openLastEntry();
+        if(isDrawerOpen) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            historyHelper.openLastEntry();
+        }
     }
     /* End Menu Section */
 
@@ -322,15 +332,17 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     public void openPlugin(String pName, String pView, String pParameter) {
-        pName      = FormatHelper.encodeURI(pName);
-        pView      = FormatHelper.encodeURI(pView);
+        pName = FormatHelper.encodeURI(pName);
+        pView = FormatHelper.encodeURI(pView);
         pParameter = FormatHelper.encodeURI(pParameter);
 
         historyHelper.addHistory(pName, pView, pParameter);
 
-        if(gui != null && gui.alertDialog != null && gui.alertDialog.isShowing()) {
+        if (gui != null && gui.alertDialog != null && gui.alertDialog.isShowing()) {
             gui.alertDialog.dismiss();
         }
+
+        this.getDrawer().setDrawerIndicatorEnabled(false);
 
         this.openPluginNoHistory(pName, pView, pParameter);
     }
@@ -660,6 +672,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 showActionBar();
 
+                isDrawerOpen = true;
+
                 invalidateOptionsMenu();
             }
 
@@ -668,6 +682,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 if(getSupportActionBar() != null)
                     getSupportActionBar().setTitle(mActivityTitle);
+
+                isDrawerOpen = false;
 
                 invalidateOptionsMenu();
             }
@@ -1049,5 +1065,9 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 startActivity(intent);
             }
         }
+    }
+
+    public ActionBarDrawerToggle getDrawer() {
+        return mDrawerToggle;
     }
 }
