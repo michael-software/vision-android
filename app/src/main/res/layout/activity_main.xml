@@ -4,7 +4,7 @@ android:id="@+id/drawer_layout"
 android:layout_width="match_parent"
 android:layout_height="match_parent">
 <!-- The main content view -->
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <net.michaelsoftware.android.jui.views.CustomSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -21,7 +21,7 @@ android:layout_height="match_parent">
                 android:id="@+id/refresh_layout_linear">
             </LinearLayout>
         </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </net.michaelsoftware.android.jui.views.CustomSwipeRefreshLayout>
 <!-- The navigation drawer -->
 <LinearLayout android:id="@+id/left_drawer"
     android:layout_width="@dimen/activity_drawer_width"
