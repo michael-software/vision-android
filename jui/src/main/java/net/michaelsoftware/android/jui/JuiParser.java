@@ -29,6 +29,7 @@ import net.michaelsoftware.android.jui.network.JsonParserAsync;
 import net.michaelsoftware.android.jui.views.Button;
 import net.michaelsoftware.android.jui.views.Checkbox;
 import net.michaelsoftware.android.jui.views.Container;
+import net.michaelsoftware.android.jui.views.CustomSwipeRefreshLayout;
 import net.michaelsoftware.android.jui.views.File;
 import net.michaelsoftware.android.jui.views.FileView;
 import net.michaelsoftware.android.jui.views.Frame;
@@ -70,6 +71,7 @@ public class JuiParser {
     private String lastUrl = "http://www.google.de";
     private Listener.OnBeforeParseListener onBeforeParse = null;
     private HashMap<String, String> customHttpHeaders = new HashMap<>();
+    private CustomSwipeRefreshLayout swipeRefreshLayout = null;
 
     public JuiParser(Activity activity, ScrollView scroll, LinearLayout linearLayout) {
         this.activity = activity;
@@ -80,6 +82,10 @@ public class JuiParser {
 
         this.submitListeners = new ArrayList<>();
         this.parseHeaderListeners = new ArrayList<>();
+    }
+
+    public void setSwipeRefreshLayout(CustomSwipeRefreshLayout swipeRefreshLayout) {
+        this.swipeRefreshLayout = swipeRefreshLayout;
     }
 
     public void parse(HashMap<Object, Object> hashMap) {
@@ -591,5 +597,9 @@ public class JuiParser {
 
     public HashMap<String, String> getCustomHttpHeaders() {
         return customHttpHeaders;
+    }
+
+    public CustomSwipeRefreshLayout getSwipeRefreshLayout() {
+        return this.swipeRefreshLayout;
     }
 }
