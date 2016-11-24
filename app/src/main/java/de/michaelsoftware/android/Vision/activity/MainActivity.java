@@ -163,7 +163,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 }
             };
 
-            mHandler.postDelayed(searchTask, 500);
+            mHandler.postDelayed(searchTask, 300);
         } else {
             this.insertSearch(null, "");
         }
