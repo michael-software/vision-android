@@ -82,6 +82,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     private String shareName;
     private String sharePage;
     private String shareCommand;
+    private boolean isDrawerOpen = false;
 
 
     @Override
@@ -660,6 +661,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 showActionBar();
 
+                isDrawerOpen = true;
+
                 invalidateOptionsMenu();
             }
 
@@ -668,6 +671,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 if(getSupportActionBar() != null)
                     getSupportActionBar().setTitle(mActivityTitle);
+
+                isDrawerOpen = false;
 
                 invalidateOptionsMenu();
             }
