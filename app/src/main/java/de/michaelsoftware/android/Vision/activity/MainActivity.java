@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -1062,5 +1063,9 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 startActivity(intent);
             }
         }
+    }
+
+    public ActionBarDrawerToggle getDrawer() {
+        return mDrawerToggle;
     }
 }
