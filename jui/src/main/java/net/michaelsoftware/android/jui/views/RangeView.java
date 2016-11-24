@@ -9,11 +9,14 @@ import android.widget.SeekBar;
 /**
  * Created by Michael on 06.06.2016.
  */
-public class RangeView extends SeekBar {
+public class RangeView extends SeekBar implements SeekBar.OnSeekBarChangeListener {
     private int min = 0;
+    private CustomSwipeRefreshLayout swipeRefreshLayout;
 
     public RangeView(Context context) {
         super(context);
+
+        this.setOnSeekBarChangeListener(this);
 
         this.setOnTouchListener(new ListView.OnTouchListener()
         {
@@ -25,12 +28,12 @@ public class RangeView extends SeekBar {
                 {
                     case MotionEvent.ACTION_DOWN:
                         // Disallow Drawer to intercept touch events.
-                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        //v.getParent().requestDisallowInterceptTouchEvent(true);
                         break;
 
                     case MotionEvent.ACTION_UP:
                         // Allow Drawer to intercept touch events.
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        //v.getParent().requestDisallowInterceptTouchEvent(false);
                         break;
                 }
 
@@ -59,5 +62,26 @@ public class RangeView extends SeekBar {
     public int getProgress() {
         int progress = super.getProgress();
         return progress + this.min;
+    }
+
+    public void setSwipeRefreshLayout(CustomSwipeRefreshLayout swipeRefreshLayout) {
+        this.swipeRefreshLayout = swipeRefreshLayout;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        if(swipeRefreshLayout != null)
+            swipeRefreshLayout.disableInterceptTouchEvent(true);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if(swipeRefreshLayout != null)
+            swipeRefreshLayout.disableInterceptTouchEvent(false);
     }
 }

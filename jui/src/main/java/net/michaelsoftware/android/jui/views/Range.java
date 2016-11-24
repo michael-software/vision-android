@@ -51,6 +51,7 @@ public class Range extends JuiView {
             ((RangeView) range).setMin(min);
             ((RangeView) range).setMax(max);
             ((RangeView) range).setProgress(value);
+            ((RangeView) range).setSwipeRefreshLayout(parser.getSwipeRefreshLayout());
 
             parser.registerSubmitElement(name, range);
 
