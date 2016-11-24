@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.michaelsoftware.android.Vision.activity.AbstractMainActivity.BaseActivity;
+import de.michaelsoftware.android.Vision.activity.MainActivity;
 
 /**
  * Created by Michael on 22.12.2015.
@@ -33,14 +34,26 @@ public class HistoryHelper {
                 activity.openPluginNoHistory(last.name, last.view, last.command);
 
                 historyList.remove(size);
+
+                if(activity instanceof MainActivity)
+                    ((MainActivity) activity).getDrawer().setDrawerIndicatorEnabled(false);
             } else if(size == 0) {
                 historyList = new ArrayList<>();
                 activity.openPluginNoHistory("android", "home", "");
+
+                if(activity instanceof MainActivity)
+                    ((MainActivity) activity).getDrawer().setDrawerIndicatorEnabled(true);
             } else {
                 activity.openPluginNoHistory("android", "home", "");
+
+                if(activity instanceof MainActivity)
+                    ((MainActivity) activity).getDrawer().setDrawerIndicatorEnabled(true);
             }
         } else {
             activity.openPluginNoHistory("android", "home", "");
+
+            if(activity instanceof MainActivity)
+                ((MainActivity) activity).getDrawer().setDrawerIndicatorEnabled(true);
         }
     }
 
