@@ -332,15 +332,17 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     public void openPlugin(String pName, String pView, String pParameter) {
-        pName      = FormatHelper.encodeURI(pName);
-        pView      = FormatHelper.encodeURI(pView);
+        pName = FormatHelper.encodeURI(pName);
+        pView = FormatHelper.encodeURI(pView);
         pParameter = FormatHelper.encodeURI(pParameter);
 
         historyHelper.addHistory(pName, pView, pParameter);
 
-        if(gui != null && gui.alertDialog != null && gui.alertDialog.isShowing()) {
+        if (gui != null && gui.alertDialog != null && gui.alertDialog.isShowing()) {
             gui.alertDialog.dismiss();
         }
+
+        this.getDrawer().setDrawerIndicatorEnabled(false);
 
         this.openPluginNoHistory(pName, pView, pParameter);
     }
