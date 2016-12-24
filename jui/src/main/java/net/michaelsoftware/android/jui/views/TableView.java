@@ -1,6 +1,7 @@
 package net.michaelsoftware.android.jui.views;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -46,7 +47,13 @@ public class TableView extends TableLayout {
                         if (element instanceof String) {
                             TextView tv = new TextView(this.context);
                             tv.setText((String) element);
-                            newRow.addView(tv);
+
+                            Log.d("element1", element.toString());
+
+                            LinearLayout lin = new LinearLayout(parser.getActivity());
+                            lin.addView(tv);
+
+                            newRow.addView(lin);
                         } else if (element instanceof HashMap) {
                             LinearLayout tableLin = parser.parseReturn((HashMap<Object, Object>) element, false);
 

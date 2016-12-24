@@ -67,6 +67,7 @@ public class Image extends JuiView {
                 int height = size.y;
 
                 HttpImageAsync httpImageAsync = new HttpImageAsync(imageView);
+                httpImageAsync.setHeaders( parser.getCustomHttpHeaders() );
                 httpImageAsync.execute(value);
                 httpImageAsync.setWidth(width);
                 httpImageAsync.setHeight(height);

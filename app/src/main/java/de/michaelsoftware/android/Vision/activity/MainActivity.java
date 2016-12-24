@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,8 +39,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import net.michaelsoftware.android.jui.Tools;
+import net.michaelsoftware.android.jui.network.HttpImageAsync;
 import net.michaelsoftware.android.jui.network.HttpPostJsonHelper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +83,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     private String shareName;
     private String sharePage;
     private String shareCommand;
+    private boolean isDrawerOpen = false;
 
 
     @Override
@@ -158,7 +163,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
                 }
             };
 
-            mHandler.postDelayed(searchTask, 500);
+            mHandler.postDelayed(searchTask, 300);
         } else {
             this.insertSearch(null, "");
         }
@@ -177,7 +182,11 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         int id = item.getItemId();
 
-        if (id == de.michaelsoftware.android.Vision.R.id.action_settings) {
+        if (id == android.R.id.home && !isDrawerOpen) {
+            historyHelper.openLastEntry();
+        } else if(id == android.R.id.home) {
+            mDrawerLayout.closeDrawers();
+        } else if (id == de.michaelsoftware.android.Vision.R.id.action_settings) {
             this.openPlugin("android", "settings");
             return true;
         } else if (id == de.michaelsoftware.android.Vision.R.id.action_add_account) {
@@ -193,7 +202,6 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             this.openPlugin("plg_user");
         } else if(id == de.michaelsoftware.android.Vision.R.id.action_add_shortcut) {
             this.addShortcut();
-            this.moveTaskToBack(true);
         } else if(id == de.michaelsoftware.android.Vision.R.id.action_share) {
             this.sharePlugin();
         } else if(id == R.id.action_feedback) {
@@ -236,7 +244,11 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
     @Override
     public void onBackPressed() {
-        historyHelper.openLastEntry();
+        if(isDrawerOpen) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            historyHelper.openLastEntry();
+        }
     }
     /* End Menu Section */
 
@@ -320,15 +332,17 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     public void openPlugin(String pName, String pView, String pParameter) {
-        pName      = FormatHelper.encodeURI(pName);
-        pView      = FormatHelper.encodeURI(pView);
+        pName = FormatHelper.encodeURI(pName);
+        pView = FormatHelper.encodeURI(pView);
         pParameter = FormatHelper.encodeURI(pParameter);
 
         historyHelper.addHistory(pName, pView, pParameter);
 
-        if(gui != null && gui.alertDialog != null && gui.alertDialog.isShowing()) {
+        if (gui != null && gui.alertDialog != null && gui.alertDialog.isShowing()) {
             gui.alertDialog.dismiss();
         }
+
+        this.getDrawer().setDrawerIndicatorEnabled(false);
 
         this.openPluginNoHistory(pName, pView, pParameter);
     }
@@ -531,7 +545,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getIdentifier());
 
 
-        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath);
 
 
         Intent intentExternally = new Intent(Intent.ACTION_VIEW, Uri.parse(url) );
@@ -548,6 +562,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             Intent intent = new Intent(MainActivity.this, MediaActivity.class);
                 Bundle b = new Bundle();
                 b.putString("image", url);
+                b.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
             intent.putExtras(b);
             startActivity(intent);
         }
@@ -560,17 +575,22 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
     }
 
     private void downloadFile(String pPath) {
-        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath);
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "bearer " + loginHelper.getAuthtoken());
 
         DownloadHelper dl = new DownloadHelper(this);
+        dl.setHeaders(headers);
         dl.execute(url);
     }
 
     private void openMusic(String pPath) {
-        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath) + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken());
+        String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI(pPath); //  + "&jwt=" + FormatHelper.encodeURI(loginHelper.getAuthtoken())
 
-        Bundle bundle = new Bundle();
-        bundle.putString("URL", url);
+            Bundle bundle = new Bundle();
+            bundle.putString("URL", url);
+            bundle.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
 
         Message message = Message.obtain(null, MyService.MSG_ACTION_PLAY);
         message.setData(bundle);
@@ -599,8 +619,9 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
             startActivity(intentExternally);
         } else {
             Intent intent = new Intent(MainActivity.this, MediaActivity.class);
-            Bundle b = new Bundle();
-            b.putString("video", url);
+                Bundle b = new Bundle();
+                b.putString("video", url);
+                b.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
             intent.putExtras(b);
             startActivity(intent);
         }
@@ -651,6 +672,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 showActionBar();
 
+                isDrawerOpen = true;
+
                 invalidateOptionsMenu();
             }
 
@@ -659,6 +682,8 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
                 if(getSupportActionBar() != null)
                     getSupportActionBar().setTitle(mActivityTitle);
+
+                isDrawerOpen = false;
 
                 invalidateOptionsMenu();
             }
@@ -702,15 +727,43 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         Bitmap icon;
         if(pluginListImages != null && pluginListImages.containsKey(this.currentName)) {
-            icon = FormatHelper.baseToBitmap(pluginListImages.get(this.currentName), 192, 192);
 
-            if(icon == null) {
-                icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+            String urlStr = pluginListImages.get(this.currentName);
+
+            if(Tools.isBase64(urlStr)) {
+                icon = FormatHelper.baseToBitmap(urlStr, 192, 192);
+
+                if (icon == null) {
+                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+                }
+
+                this.createShortcut(shortcutName, methode, icon);
+            } else {
+
+                HttpImageAsync httpImageAsync = new HttpImageAsync(this, "createShortcut");
+
+                ArrayList<String> array = new ArrayList<>();
+                array.add(shortcutName);
+                array.add(methode);
+
+                httpImageAsync.setSpecialData(array);
+                httpImageAsync.execute( net.michaelsoftware.android.jui.Tools.getAbsoluteUrl(urlStr, this.loginHelper.getServer()) );
             }
         } else {
             icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+            this.createShortcut(shortcutName, methode, icon);
         }
 
+        //Logs.d(this, add.getExtras().toString());
+    }
+
+    public void createShortcut(Bitmap icon, ArrayList<String> array) {
+        if(array.size() == 2) {
+            this.createShortcut(array.get(0), array.get(1), icon);
+        }
+    }
+
+    private void createShortcut(String shortcutName, String methode, Bitmap icon) {
         icon = Bitmap.createScaledBitmap(icon, 128, 128, true);
 
         Intent shortcutIntent = new Intent(this.getApplicationContext(), MainActivity.class);
@@ -728,7 +781,7 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
         add.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         sendBroadcast(add);
 
-        Logs.d(this, add.getExtras().toString());
+        this.moveTaskToBack(true);
     }
 
     public void getMenuContent(String pResult) {  // Get JSON for the menu
@@ -980,5 +1033,41 @@ public class MainActivity extends SiteActionsActivity implements SwipeRefreshLay
 
         MenuItem item = this.mMenu.findItem(R.id.action_share);
         item.setVisible(false);
+    }
+
+    @SuppressWarnings("unused")
+    public void openGallery(String galleryId, String pIndex) {
+        HashMap<Object, Object> header = gui.getHeader();
+
+        if(header.containsKey(galleryId) && Tools.isHashmap(header.get(galleryId))) {
+            int index = Tools.getInt(pIndex, 0);
+            HashMap<Object, Object> gallery = (HashMap<Object, Object>) header.get(galleryId);
+            ArrayList<String> array = new ArrayList<>();
+
+            for(int i  = 0, x = gallery.size(); i < x; i++) {
+                if(gallery.containsKey(i) && Tools.isString(gallery.get(i)) ) {
+                    String url = loginHelper.getServer() + "api/file.php?file=" + FormatHelper.encodeURI((String) gallery.get(i));
+                    array.add(url);
+                }
+            }
+
+            if(array.size() > 0) {
+                if(array.size()-1 < index) {
+                    index = array.size()-1;
+                }
+
+                Intent intent = new Intent(MainActivity.this, MediaActivity.class);
+                    Bundle b = new Bundle();
+                    b.putStringArrayList("images", array);
+                    b.putInt("index", index);
+                    b.putString("Authorization", "bearer " + loginHelper.getAuthtoken());
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        }
+    }
+
+    public ActionBarDrawerToggle getDrawer() {
+        return mDrawerToggle;
     }
 }

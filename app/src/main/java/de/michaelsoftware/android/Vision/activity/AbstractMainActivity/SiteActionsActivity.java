@@ -65,7 +65,7 @@ public abstract class SiteActionsActivity extends LoginActivity {
         pString += "{\"type\":\"container\", \"background\":\"#66000000\", \"padding\":20, \"marginTop\":15, \"marginBottom\":15, \"value\":[";
         pString += "{\"type\":\"heading\",\"value\":\"Guten Tag " + loginHelper.getUsername() + "\"}";
         pString += ",{\"type\":\"text\", \"align\":\"right\", \"value\":\"" + loginHelper.getServer() + "\"}";
-        pString += "]}";
+        pString += "],\"click\":\"openPlugin('plg_user')\"}";
         pString += ",{\"type\":\"buttonlist\", \"value\":[";
 
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this, loginHelper.getUsername() + '@' + FormatHelper.getServerName(loginHelper.getServer()));

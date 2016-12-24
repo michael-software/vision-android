@@ -12,6 +12,7 @@ import de.michaelsoftware.android.Vision.tools.gui.GUIHelper;
 /**
  * Created by Michael on 31.05.2016.
  */
+/*
 public class Spoiler extends LinearLayout {
     private LinearLayout innerLinearLayout;
     private Button spoilerButton;
@@ -83,4 +84,4 @@ public class Spoiler extends LinearLayout {
             spoilerButton.setText(text);
         }
     }
-}
+}*/

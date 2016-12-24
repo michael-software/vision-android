@@ -1,7 +1,5 @@
 package de.michaelsoftware.android.Vision.tools.gui;
 
-import android.util.Log;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 

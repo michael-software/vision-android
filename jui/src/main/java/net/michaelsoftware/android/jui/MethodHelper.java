@@ -11,6 +11,7 @@ import net.michaelsoftware.android.jui.models.ActionModel;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by Michael on 28.12.2015.
@@ -38,19 +39,40 @@ public class MethodHelper {
 
             Method method;
             String actionRaw = action;
-            action = action.replaceAll("\"", "'");
+            //action = action.replaceAll("\"", "'");
 
+            Log.d("action", action);
 
-            String[] ops = action.split("'");
+            action = action.replaceAll("((?:.?)*)\\(((?:.?)*)\\)", "$2"); // removes name
+            //action = action.replaceAll("/ ,/g", ",").replaceAll("/, /g", ","); // deletes whitespace
+
 
             ArrayList<String> params = new ArrayList<>();
-            for (int i = 1; i < ops.length; i++) {
-                params.add(ops[i]);
 
-                i++;
+            if(!action.equals("")) {
+                Log.d("actionRegex", action);
+
+                action = action.trim();
+
+
+                if (action.charAt(0) == '\'')
+                    action = action.substring(1, action.length());
+
+                if (action.charAt(action.length() - 1) == '\'')
+                    action = action.substring(0, action.length() - 1);
+
+                String[] ops = action.split("','");
+
+                for (int i = 0; i < ops.length; i++) {
+                    Log.d("ops", ops[i]);
+
+                    params.add(ops[i]);
+                }
             }
 
             Object[] parameters = params.toArray();
+
+            Log.d("actionParams", params.toString());
 /*
             if(ops.length-2 > 0) {
                 parameters = new Object[ops.length - 2];
@@ -70,9 +92,9 @@ public class MethodHelper {
 
 
 
-            if (action.startsWith("openUrl") && params.size() == 1) {
+            if (actionRaw.startsWith("openUrl") && params.size() == 1) {
                 parser.openUrl(params.get(0));
-            } else if (action.startsWith("submit") && params.size() < 2) {
+            } else if (actionRaw.startsWith("submit") && params.size() < 2) {
                 if(params.size() == 0) {
                     parser.submit();
                 } else {
@@ -87,7 +109,7 @@ public class MethodHelper {
                         Object object = ls.get(i).object;
                         Class<?> classObject = object.getClass();
 
-                        if (!Tools.empty(name) && action.startsWith(name)) {
+                        if (!Tools.empty(name) && actionRaw.startsWith(name)) {
                             if (parameters.length == params.size() && params.size() == ls.get(i).parameters) {
                                 try {
                                     Method[] validMethods = classObject.getMethods();

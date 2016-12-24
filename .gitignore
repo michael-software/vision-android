@@ -12,3 +12,5 @@ jui/proguard-rules.pro
 app/.gitignore
 app/proguard-rules.pro
 .navigation/app/raw/main.nvg.xml
+app/build/
+jui/build/

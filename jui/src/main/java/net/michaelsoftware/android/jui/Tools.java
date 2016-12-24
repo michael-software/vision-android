@@ -11,6 +11,9 @@ import android.util.Base64;
 import android.util.TypedValue;
 import android.view.Display;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -273,7 +276,7 @@ public class Tools {
 
     public static boolean isBase64(String value) {
         if(Tools.isString(value)) {
-            int length = value.indexOf(",")-1;
+            int length = value.indexOf(",");
 
             if(length > 0) {
                 value = value.substring(0, length);
@@ -375,5 +378,38 @@ public class Tools {
         }
 
         return newSide1;
+    }
+
+    public static String getAbsoluteUrl(String url, String domain) {
+        if(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://")) {
+            return url;
+        }
+
+        return domain + "/" + url;
+    }
+
+
+    public static String getPath(String path) {
+        String[] array = path.split("/");
+
+        String string = "";
+
+        for(int i = 0, x = array.length-1; i < x; i++) {
+            if(!array[i].equals(""))
+                string += array[i] + "/";
+        }
+
+        return string;
+    }
+
+    public static String getFilename(String url, String query) {
+        String[] array = url.split("/");
+
+
+        if(query != null) {
+            return array[array.length-1] + query;
+        }
+
+        return array[array.length-1];
     }
 }

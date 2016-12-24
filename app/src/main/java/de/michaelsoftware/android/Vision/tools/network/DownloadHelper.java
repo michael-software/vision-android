@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -12,8 +13,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.michaelsoftware.android.Vision.activity.MainActivity;
 import de.michaelsoftware.android.Vision.tools.FormatHelper;
@@ -23,9 +27,10 @@ import de.michaelsoftware.android.Vision.tools.Logs;
  * Helps to download a file to the filesystem
  * Created by Michael on 04.02.2016.
  */
-public class DownloadHelper extends AsyncTask<String, String, String> {
+public class DownloadHelper extends AsyncTask<String, Integer, String> {
     ProgressDialog pDialog;
     MainActivity zActivity;
+    private HashMap<String, String> headers = new HashMap<>();
 
     public DownloadHelper(MainActivity pActivity) {
         zActivity = pActivity;
@@ -63,16 +68,11 @@ public class DownloadHelper extends AsyncTask<String, String, String> {
         int count;
         try {
             URL url = new URL(f_url[0]);
-            URLConnection connection = url.openConnection();
-            connection.connect();
-            // this will be useful so that you can show a tipical 0-100% progress bar
-            int lengthOfFile = connection.getContentLength();
 
-            // download the file
-            InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
-            // Output stream
+
             String fileNameTest = FormatHelper.getFileName(f_url[0]);
+
 
             File file;
             if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -80,6 +80,8 @@ public class DownloadHelper extends AsyncTask<String, String, String> {
             } else {
                 file = new File(this.zActivity.getFilesDir() + "/Vision/" + zActivity.getLoginHelper().getIdentifier() + "/" + fileNameTest);
             }
+
+            Log.d("File", file.toString());
 
             File parentDir = file.getParentFile();
             if(!parentDir.mkdirs() && !parentDir.isDirectory()) {
@@ -92,27 +94,46 @@ public class DownloadHelper extends AsyncTask<String, String, String> {
                 return null;
             }
 
-            OutputStream output = new FileOutputStream(file);
 
-            byte data[] = new byte[1024];
 
-            long total = 0;
 
-            while ((count = input.read(data)) != -1) {
-                total += count;
+            URLConnection urlConnection = url.openConnection();
 
-                publishProgress(""+(int)((total*100)/lengthOfFile));
+            if(this.headers.size() > 0) {
+                for(Map.Entry<String, String> entry : this.headers.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
 
-                // writing data to file
-                output.write(data, 0, count);
+                    urlConnection.setRequestProperty(key, value);
+                }
+            }
+
+            // download the file
+            int totalSize = urlConnection.getContentLength();
+
+            BufferedInputStream inStream = new BufferedInputStream(urlConnection.getInputStream());
+
+
+
+            FileOutputStream fileOutput = new FileOutputStream(file);
+            int downloadedSize = 0;
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            //Log.d("Test", inputStream.read(buffer)+"");
+            while ((bufferLength = inStream.read(buffer)) > 0) {
+                fileOutput.write(buffer, 0, bufferLength);
+                downloadedSize += bufferLength;
+
+                publishProgress( Math.round( (downloadedSize/totalSize)*100 ) );
+                Log.d("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
             }
 
             // flushing output
-            output.flush();
+            fileOutput.flush();
 
             // closing streams
-            output.close();
-            input.close();
+            fileOutput.close();
 
             return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + fileNameTest;
         } catch (Exception e) {
@@ -125,8 +146,12 @@ public class DownloadHelper extends AsyncTask<String, String, String> {
     }
 
     /* Updating progress bar */
-    protected void onProgressUpdate(String... progress) {
-        pDialog.setProgress(Integer.parseInt(progress[0]));
+    protected void onProgressUpdate(Integer... progress) {
+        pDialog.setProgress(progress[0]);
+    }
+
+    public void setHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 
     /* After completing background task: Dismiss the progress dialog, Open the downloaded file */

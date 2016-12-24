@@ -15,6 +15,8 @@ import net.michaelsoftware.android.jui.interfaces.Listener;
 import net.michaelsoftware.android.jui.models.NameValue;
 import net.michaelsoftware.android.jui.models.ViewModel;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,8 @@ import de.michaelsoftware.android.Vision.tools.ResourceHelper;
 import de.michaelsoftware.android.Vision.tools.SecurityHelper;
 import de.michaelsoftware.android.Vision.tools.ThemeUtils;
 import de.michaelsoftware.android.Vision.tools.gui.listener.OnSwipeTouchListener;
+import de.michaelsoftware.android.Vision.tools.gui.views.AutoInput;
+import de.michaelsoftware.android.Vision.tools.gui.views.AutoInputView;
 import de.michaelsoftware.android.Vision.tools.gui.views.ButtonList;
 import de.michaelsoftware.android.Vision.tools.gui.views.Editor;
 import de.michaelsoftware.android.Vision.tools.gui.views.EditorView;
@@ -44,6 +48,8 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
     public AlertDialog alertDialog;
 
     private JuiParser juiParser;
+
+    private HashMap<Object, Object> juiHead;
 
     public int padding       = 30;
     public int paddingTop    = padding;
@@ -67,17 +73,24 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
         this.scroll = pScroll;
 
         juiParser = new JuiParser(main, this.scroll, this.linear);
+        juiParser.addAction("openPlugin", 1, mainActivity);
+        juiParser.addAction("openPlugin", 2, mainActivity);
         juiParser.addAction("openPlugin", 3, mainActivity);
         juiParser.addAction("openMedia", 2, mainActivity);
+        juiParser.addAction("openGallery", 2, mainActivity);
+        juiParser.addAction("sendAsync", 2, mainActivity);
 
         juiParser.addElement(new ViewModel("editor", "ed", Editor.class));
         juiParser.addElement(new ViewModel("buttonlist", "btl", ButtonList.class));
+        juiParser.addElement(new ViewModel("autoinput", "ai", AutoInput.class));
         juiParser.setOnSubmitListener(new Listener.OnSubmitListener() {
 
             @Override
             public String onSubmit(View view) {
                 if(view instanceof EditorView) {
                     return ((EditorView) view).getValue();
+                } else if(view instanceof AutoInputView) {
+                    return (new JSONArray(((AutoInputView) view).getValue())).toString();
                 }
 
                 return null;
@@ -143,8 +156,14 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
         juiParser.parseUrl(urlStr);
     }
 
+    public HashMap<Object, Object> getHeader() {
+        return this.juiHead;
+    }
+
     @Override
     public void onParseHead(HashMap<Object, Object> hashMap) {
+        this.juiHead = hashMap;
+
         if(hashMap.containsKey("status") && hashMap.get("status") instanceof Integer) {
             int status = (int) hashMap.get("status");
             if(status == 401) {

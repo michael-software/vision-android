@@ -174,10 +174,10 @@ public class FormatHelper {
     }
 
     public static String getFileName(String pUrl) {
-        String encodedFileName = pUrl.replaceAll("(.*)getFile(.*)&file=(.*)&(.*)", "$3");
+        String encodedFileName = pUrl.replaceAll("(.*)file.php(.*)file=(.*)", "$3");
 
         try {
-            return URLDecoder.decode(encodedFileName, "utf-8");
+            return URLDecoder.decode(URLDecoder.decode(encodedFileName, "utf-8"), "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

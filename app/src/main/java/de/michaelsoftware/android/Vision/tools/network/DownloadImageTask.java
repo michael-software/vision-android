@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -27,6 +29,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
     private ProgressDialog progressDialog;
     private Context context;
+    private HashMap<String, String> headers = new HashMap<>();
 
     public DownloadImageTask(ImageView bmImage, Context context) {
         this.bmImage = bmImage;
@@ -74,6 +77,15 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
+            if(this.headers.size() > 0) {
+                for(Map.Entry<String, String> entry : this.headers.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+
+                    conn.setRequestProperty(key, value);
+                }
+            }
+
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 InputStream inp = conn.getInputStream();
@@ -84,6 +96,10 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             e.printStackTrace();
         }
         return mIcon11;
+    }
+
+    public void setCustomHttpHeaders(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 
     protected void onPostExecute(Bitmap result) {

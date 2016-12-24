@@ -145,7 +145,7 @@ public class AddNewAccountActivity extends Activity {
     public void onBackPressed() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
+                    new String[]{Manifest.permission.GET_ACCOUNTS},
                     OPEN_SELECT_USERS);
 
             return;
@@ -223,7 +223,7 @@ public class AddNewAccountActivity extends Activity {
              * Check the user name and the password against the server.
              */
             newUserAccount = new Account(username+"@"+FormatHelper.getServerName(server), getResources().getString(R.string.account_type));
-            String url = FormatHelper.getServerUrl(server)+"ajax.php?action=login";
+            String url = FormatHelper.getServerUrl(server)+"api/login.php?action=login";
 
             LoginHelper.getUserData(url, username, password, this, "getUserInfo");
 

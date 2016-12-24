@@ -28,6 +28,6 @@ public class Table extends JuiView {
         TableView tableView = new TableView(parser.getActivity());
         tableView.parseHashMap(properties, parser);
 
-        return tableView;
+        return JuiParser.addProperties(tableView, properties);
     }
 }

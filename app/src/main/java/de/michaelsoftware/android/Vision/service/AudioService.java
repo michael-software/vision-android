@@ -10,6 +10,8 @@ import android.media.AudioManager;
 import android.support.v7.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import java.util.HashMap;
+
 import de.michaelsoftware.android.Vision.MyService;
 import de.michaelsoftware.android.Vision.R;
 import de.michaelsoftware.android.Vision.listener.OnEndedListener;
@@ -34,6 +36,7 @@ public abstract class AudioService extends Service implements AudioManager.OnAud
 
     protected static final String ACTION_PAUSE = PACKAGE_NAME + ".ACTION_PAUSE";
     protected static final String ACTION_STOP = PACKAGE_NAME + ".ACTION_STOP";
+    protected HashMap<String, String> headers = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -114,6 +117,7 @@ public abstract class AudioService extends Service implements AudioManager.OnAud
     protected void playAudio(String url) {
         if(this.mp == null) {
             this.mp = new HttpAudioPlayer(this);
+            this.mp.setHeaders(this.headers);
             this.mp.setOnTimeChangedListener(new OnTimeChangedListener() {
                 @Override
                 public void timeChanged(int time) {
@@ -124,6 +128,8 @@ public abstract class AudioService extends Service implements AudioManager.OnAud
             this.mp.setOnEndedListener(new OnEndedListener() {
                 @Override
                 public void onEnded() {
+                    mp.stop();
+                    stopForeground(true);
                     notificationManager.cancel(musicId);
                 }
             });
