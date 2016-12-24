@@ -15,6 +15,8 @@ import net.michaelsoftware.android.jui.interfaces.Listener;
 import net.michaelsoftware.android.jui.models.NameValue;
 import net.michaelsoftware.android.jui.models.ViewModel;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,8 @@ import de.michaelsoftware.android.Vision.tools.ResourceHelper;
 import de.michaelsoftware.android.Vision.tools.SecurityHelper;
 import de.michaelsoftware.android.Vision.tools.ThemeUtils;
 import de.michaelsoftware.android.Vision.tools.gui.listener.OnSwipeTouchListener;
+import de.michaelsoftware.android.Vision.tools.gui.views.AutoInput;
+import de.michaelsoftware.android.Vision.tools.gui.views.AutoInputView;
 import de.michaelsoftware.android.Vision.tools.gui.views.ButtonList;
 import de.michaelsoftware.android.Vision.tools.gui.views.Editor;
 import de.michaelsoftware.android.Vision.tools.gui.views.EditorView;
@@ -78,12 +82,15 @@ public class GUIHelper implements Listener.OnParseHeaderListener, Listener.OnBef
 
         juiParser.addElement(new ViewModel("editor", "ed", Editor.class));
         juiParser.addElement(new ViewModel("buttonlist", "btl", ButtonList.class));
+        juiParser.addElement(new ViewModel("autoinput", "ai", AutoInput.class));
         juiParser.setOnSubmitListener(new Listener.OnSubmitListener() {
 
             @Override
             public String onSubmit(View view) {
                 if(view instanceof EditorView) {
                     return ((EditorView) view).getValue();
+                } else if(view instanceof AutoInputView) {
+                    return (new JSONArray(((AutoInputView) view).getValue())).toString();
                 }
 
                 return null;
