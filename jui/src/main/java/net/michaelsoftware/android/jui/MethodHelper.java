@@ -41,27 +41,33 @@ public class MethodHelper {
             String actionRaw = action;
             //action = action.replaceAll("\"", "'");
 
+            Log.d("action", action);
+
             action = action.replaceAll("((?:.?)*)\\(((?:.?)*)\\)", "$2"); // removes name
             //action = action.replaceAll("/ ,/g", ",").replaceAll("/, /g", ","); // deletes whitespace
 
-            Log.d("actionRegex", action);
-
-            action = action.trim();
-
-
-            if(action.charAt(0) == '\'')
-                action = action.substring(1, action.length());
-
-            if(action.charAt(action.length()-1) == '\'')
-                action = action.substring(0, action.length()-1);
-
-            String[] ops = action.split("','");
 
             ArrayList<String> params = new ArrayList<>();
-            for (int i = 0; i < ops.length; i++) {
-                Log.d("ops", ops[i]);
 
-                params.add(ops[i]);
+            if(!action.equals("")) {
+                Log.d("actionRegex", action);
+
+                action = action.trim();
+
+
+                if (action.charAt(0) == '\'')
+                    action = action.substring(1, action.length());
+
+                if (action.charAt(action.length() - 1) == '\'')
+                    action = action.substring(0, action.length() - 1);
+
+                String[] ops = action.split("','");
+
+                for (int i = 0; i < ops.length; i++) {
+                    Log.d("ops", ops[i]);
+
+                    params.add(ops[i]);
+                }
             }
 
             Object[] parameters = params.toArray();
