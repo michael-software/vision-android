@@ -128,6 +128,8 @@ public abstract class AudioService extends Service implements AudioManager.OnAud
             this.mp.setOnEndedListener(new OnEndedListener() {
                 @Override
                 public void onEnded() {
+                    mp.stop();
+                    stopForeground(true);
                     notificationManager.cancel(musicId);
                 }
             });
